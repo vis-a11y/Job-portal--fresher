@@ -1,0 +1,22 @@
+{
+  "name": "fresher-job-portal",
+  "version": "2.0.0",
+  "description": "Advanced AI-Based Job Portal for Freshers with verified skills and project showcase",
+  "main": "backend.js",
+  "scripts": {
+    "start": "node backend.js",
+    "dev": "node --watch backend.js",
+    "check": "node --check backend.js && node --check app.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.11.3",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "nodemailer": "^6.9.1",
+    "uuid": "^9.0.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
