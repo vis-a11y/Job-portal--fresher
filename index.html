@@ -3,26 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FresherJob - AI Job Portal for Freshers</title>
+  <title>FresherJob - Master Career Ecosystem</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation -->
   <header class="topbar">
     <div class="row" style="gap: 1rem;">
-      <h1 style="margin: 0; font-size: 1.5rem;">🚀 FresherJob</h1>
-      <span style="font-size: 0.85rem; color: var(--muted);">AI-Powered Portal for Freshers</span>
+      <h1 class="logo">🚀 FresherJob</h1>
+      <span class="tagline">Empowering the next generation of talent</span>
     </div>
     <nav>
-      <a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a>
-      <a href="#profile" class="nav-link" data-section="profile">Profile</a>
-      <a href="#jobs" class="nav-link" data-section="jobs">Jobs</a>
-      <a href="#roadmap" class="nav-link" data-section="roadmap">Roadmap</a>
-      <a href="#interview" class="nav-link" data-section="interview">Mock Interview</a>
-      <a href="#portfolio" class="nav-link" data-section="portfolio">Portfolio</a>
-      <a href="#applications" class="nav-link" data-section="applications">Applications</a>
-      <a href="recruiter.html" class="nav-link">Recruiter</a>
-      <a href="admin.html" class="nav-link">Admin</a>
+      <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
+      <a href="#" class="nav-link" data-section="profile">Profile</a>
+      <a href="#" class="nav-link" data-section="jobs">Explore Jobs</a>
+      <a href="#" class="nav-link" data-section="roadmap">Job Matching</a>
+      <a href="#" class="nav-link" data-section="interview">AI Interview</a>
+      <a href="#" class="nav-link" data-section="portfolio">Portfolio</a>
+      <a href="#" class="nav-link" data-section="applications">Applications</a>
       <button id="logoutBtn" class="btn-logout">Logout</button>
     </nav>
   </header>
@@ -31,80 +29,50 @@
     <!-- DASHBOARD SECTION -->
     <section id="dashboard" class="section active">
       <div class="card hero">
-        <div>
-          <h2>Welcome to FresherJob! 🎓</h2>
-          <p id="welcomeName" style="font-weight:600;"></p>
-          <p>Your all-in-one platform to discover jobs, validate skills, build projects, and land your dream role.</p>
+        <div class="hero-image" style="flex: 0 0 280px; text-align: center;">
+          <img src="assets/fresher-hero.png" alt="Fresher Career Rocket" style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         </div>
-        <div class="score-box">
-          <p>🎯 Fresher Readiness Score</p>
+        <div style="flex: 1;">
+          <h2>Welcome to your Career Hub! 🎓</h2>
+          <p id="welcomeName" style="font-weight:600; font-size: 1.25rem; color: #3b82f6; margin: 0.5rem 0;"></p>
+          <p>This is your premium ecosystem to bridge the skill gap and land high-potential roles.</p>
+          <div style="margin-top: 1.5rem;">
+            <button class="btn-primary" onclick="updatePotentialScore()">✨ Recalculate AI Score</button>
+          </div>
+        </div>
+        <div class="score-card">
+          <p>🎯 Fresher Potential Score</p>
           <strong id="readinessScore">0</strong>
-          <p style="font-size: 0.8rem; color: var(--muted);">Build your score</p>
+          <div class="score-breakdown">
+            <span>Skills (40%)</span> • <span>Projects (30%)</span> • <span>Edu (30%)</span>
+          </div>
         </div>
       </div>
 
       <div class="grid-2">
-        <div class="card">
-          <h3>📊 What is Fresher Readiness Score?</h3>
-          <p><strong>Your score is calculated from:</strong></p>
-          <ul class="list">
-            <li><strong>Resume Quality (25%)</strong> - Upload an ATS-friendly resume</li>
-            <li><strong>Skill Tests (30%)</strong> - Validate your technical knowledge</li>
-            <li><strong>Mock Interviews (20%)</strong> - Practice communication skills</li>
-            <li><strong>Projects (10%)</strong> - Showcase verified portfolio projects</li>
-            <li><strong>Profile Completeness (15%)</strong> - Fill all profile details</li>
+        <div class="card glass">
+          <h3>🧠 Intelligence Briefing</h3>
+          <p>Our AI analyzes market trends and your profile to provide:</p>
+          <ul class="advanced-list">
+            <li><strong>Skill Gap Detection</strong> - Instant requirement matching</li>
+            <li><strong>Dynamic Compatibility</strong> - Real-time job matching scores</li>
+            <li><strong>Career Recommendations</strong> - Data-driven role suggestions</li>
           </ul>
         </div>
 
-        <div class="card">
-          <h3>🎯 Quick Stats</h3>
-          <div class="stat-box">
-            <span>📝 Profile Completion:</span>
-            <div class="progress-bar">
-              <div class="progress-fill" id="profileCompletion" style="width: 0%"></div>
-            </div>
+        <div class="card glass">
+          <h3>🎯 Quick Performance Stats</h3>
+          <div class="stat-row">
+            <span>Verified Skills:</span>
+            <strong id="skillsCount" class="highlight">0</strong>
           </div>
-          <div class="stat-box">
-            <span>✅ Skills Verified:</span>
-            <strong id="skillsCount">0</strong>
+          <div class="stat-row">
+            <span>Active Projects:</span>
+            <strong id="projectsCount" class="highlight">0</strong>
           </div>
-          <div class="stat-box">
-            <span>📂 Portfolio Projects:</span>
-            <strong id="projectsCount">0</strong>
-          </div>
-          <div class="stat-box">
-            <span>📋 Applications:</span>
-            <strong id="applicationsCount">0</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>⭐ Unique Features Available</h3>
-        <div class="features-grid">
-          <div class="feature-item">
-            <h4>🧠 Skill → Job Roadmap</h4>
-            <p>Get personalized learning paths and discover jobs matching your skills</p>
-          </div>
-          <div class="feature-item">
-            <h4>🧪 Practical Skill Tests</h4>
-            <p>Auto-verified MCQ and coding tests recognized by recruiters</p>
-          </div>
-          <div class="feature-item">
-            <h4>🎤 AI Mock Interview</h4>
-            <p>Practice technical and HR questions with AI feedback</p>
-          </div>
-          <div class="feature-item">
-            <h4>📂 Portfolio Builder</h4>
-            <p>Showcase your projects with GitHub links and verification</p>
-          </div>
-          <div class="feature-item">
-            <h4>💬 Rejection Feedback</h4>
-            <p>Get specific improvement tips after each rejection</p>
-          </div>
-          <div class="feature-item">
-            <h4>🛡️ Fake Job Detection</h4>
-            <p>Apply safely to verified jobs from real companies</p>
+          <div class="stat-row">
+            <span>Applied Jobs:</span>
+            <strong id="applicationsCount" class="highlight">0</strong>
           </div>
         </div>
       </div>
@@ -114,227 +82,101 @@
     <section id="profile" class="section">
       <div class="grid-2">
         <div class="card">
-          <h3>👤 Personal Information</h3>
-          <form id="profileForm">
-            <label>Full Name
-              <input type="text" name="name" id="profileName" placeholder="John Doe">
-            </label>
-            <label>Email
-              <input type="email" id="profileEmail" disabled>
-            </label>
+          <h3>👤 Identity & Background</h3>
+          <form id="profileUpdateForm">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="profileName" placeholder="Enter your full name">
+            </div>
+            <div class="grid-2" style="gap: 1rem;">
+              <label>Email (Verified)
+                <input type="email" id="profileEmail" disabled>
+              </label>
+              <label>Contact Number
+                <input type="tel" id="profileContact" placeholder="+91">
+              </label>
+            </div>
             <label>College/University
-              <input type="text" name="college" id="profileCollege" placeholder="XYZ University">
+              <input type="text" id="profileCollege" placeholder="Your University">
             </label>
-            <label>Branch/Stream
-              <input type="text" name="branch" id="profileBranch" placeholder="Computer Science">
-            </label>
-            <label>Graduation Year
-              <input type="number" name="year" id="profileYear" min="2024" max="2030">
-            </label>
-            <label>Contact Number
-              <input type="tel" name="contact" id="profileContact" placeholder="+91 98765 43210">
-            </label>
-            <button type="submit" class="btn-primary">Save Profile</button>
+            <div class="grid-2" style="gap: 1rem;">
+              <label>Branch
+                <input type="text" id="profileBranch" placeholder="Computer Science">
+              </label>
+              <label>Graduation Year
+                <input type="number" id="profileYear" placeholder="2025">
+              </label>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Save Profile</button>
           </form>
         </div>
 
         <div class="card">
-          <h3>📋 Skills & Background</h3>
+          <h3>📋 Skills & Bio</h3>
           <form id="skillsForm">
-            <label>Your Skills (comma-separated)
-              <input type="text" id="profileSkills" placeholder="JavaScript, React, Node.js, SQL, Git">
+            <label>Tech Stack (Comma-separated)
+              <input type="text" id="profileSkills" placeholder="JavaScript, Node.js, SQL, React">
             </label>
-            <label>About You
-              <textarea id="profileAbout" placeholder="Tell us about your interests, projects, and career goals..." rows="5"></textarea>
+            <label>Professional Bio
+              <textarea id="profileAbout" rows="6" placeholder="Describe your technical interests and projects..."></textarea>
             </label>
-            <button type="submit" class="btn-primary">Update Skills</button>
+            <div class="row" style="gap: 1rem; margin-top: 1.5rem;">
+              <button type="submit" class="btn-primary" style="flex:1;">Update Skills</button>
+              <button type="button" class="btn-secondary" onclick="simulateResumeParsing()" style="flex:1;">✨ AI Parse Resume</button>
+            </div>
           </form>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3>📄 Resume Management</h3>
-          <div class="upload-box">
-            <p>📁 Upload your ATS-friendly resume (PDF)</p>
-            <input type="file" id="resumeUpload" accept=".pdf" style="width: 100%; margin-top: 1rem;">
-            <button type="button" class="btn-primary" style="margin-top: 1rem;">Upload Resume</button>
-            <p class="muted" style="font-size: 0.85rem; margin-top: 0.5rem;">✓ Make sure it's in ATS format</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>🎓 Resume Builder</h3>
-          <p>Create an ATS-optimized resume using our builder:</p>
-          <button class="btn-primary" style="margin-top: 1rem;">Open Resume Builder</button>
-          <div class="info-box" style="margin-top: 1.5rem;">
-            <strong>Tips:</strong>
-            <ul class="list">
-              <li>Use simple fonts (Arial, Calibri)</li>
-              <li>Include relevant skills and projects</li>
-              <li>Quantify your achievements</li>
-              <li>Keep it to 1 page for freshers</li>
-            </ul>
-          </div>
         </div>
       </div>
     </section>
 
     <!-- JOBS SECTION -->
     <section id="jobs" class="section">
-      <div class="card">
-        <h3>🔍 Fresher-Only Jobs</h3>
-        <div class="filters-row">
-          <input type="text" id="jobSearch" placeholder="Search by role, skills...">
-          <select id="jobFilter">
-            <option value="">All Types</option>
-            <option value="Internship">Internship</option>
-            <option value="Full-Time">Full-Time</option>
-            <option value="Training">Training Provided</option>
-          </select>
-          <button class="btn-primary" onclick="applyJobFilters()">Filter</button>
+      <div class="card filters-container">
+        <h3>🔍 Global Fresher Marketplace</h3>
+        <p class="muted">Explore roles specifically designed for entry-level talent.</p>
+        <div class="row" style="gap: 1rem; margin-top: 1.5rem;">
+          <input type="text" id="jobSearch" placeholder="Filter by skills, title, or company..." style="flex:1;">
+          <button class="btn-primary" onclick="fetchJobs()">Search Jobs</button>
         </div>
       </div>
-
-      <div id="jobsList"></div>
-
-      <template id="jobCardTemplate">
-        <div class="card job-card">
-          <div class="row" style="justify-content: space-between;">
-            <div style="flex: 1;">
-              <h3 style="margin: 0 0 0.5rem 0;">{{jobTitle}}</h3>
-              <p class="muted">{{companyName}}</p>
-            </div>
-            <div style="text-align: right;">
-              <span class="badge">{{jobType}}</span>
-              <span class="badge" style="margin-left: 0.5rem;">{{salary}}</span>
-            </div>
-          </div>
-          
-          <p>{{description}}</p>
-          
-          <div class="skills-tags">
-            {{skillsTags}}
-          </div>
-
-          <div class="row" style="justify-content: space-between; margin-top: 1rem;">
-            <span class="muted" style="font-size: 0.85rem;">Match: {{matchPercentage}}%</span>
-            <button class="btn-primary btn-sm" data-job-id="{{jobId}}" onclick="viewJobDetailsBtn(this)">View Details</button>
-            <button class="btn-secondary btn-sm" data-job-id="{{jobId}}" onclick="applyJobBtn(this)">Apply Now</button>
-          </div>
-        </div>
-      </template>
+      <div id="jobsList" class="jobs-grid"></div>
     </section>
 
     <!-- ROADMAP SECTION -->
     <section id="roadmap" class="section">
-      <div class="card">
-        <h3>🧠 Skill → Job Roadmap</h3>
-        <p class="muted">Personalized learning path based on your skills and career goals</p>
+      <div class="card hero-compact">
+        <h2>🧠 Smart Job Matching</h2>
+        <p>Roles curated specifically for your verified tech stack.</p>
       </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3>📊 Your Skills Analysis</h3>
-          <div id="skillsAnalysis"></div>
-          <button class="btn-primary" style="margin-top: 1rem;">Update Skills</button>
-        </div>
-
-        <div class="card">
-          <h3>🎯 Recommended Jobs</h3>
-          <div id="recommendedJobs"></div>
-          <p class="muted" style="margin-top: 1rem;">* Based on your current skills</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>📚 Skills to Learn</h3>
-        <p>These skills appear in jobs you're interested in:</p>
-        <div id="skillsToLearn"></div>
-      </div>
-
-      <div class="card">
-        <h3>📈 Learning Path</h3>
-        <div class="learning-timeline">
-          <div class="timeline-item">
-            <span class="timeline-dot">1</span>
-            <span>Choose a target role</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-dot">2</span>
-            <span>Identify missing skills</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-dot">3</span>
-            <span>Take skill tests</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-dot">4</span>
-            <span>Build projects</span>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-dot">5</span>
-            <span>Apply to jobs</span>
-          </div>
-        </div>
+      <div id="matchedJobsList" class="jobs-grid">
+         <div class="card"><p class="muted">Loading matched opportunities...</p></div>
       </div>
     </section>
 
-    <!-- MOCK INTERVIEW SECTION -->
+    <!-- INTERVIEW SECTION -->
     <section id="interview" class="section">
       <div class="grid-2">
         <div class="card">
-          <h3>🎤 AI Mock Interview</h3>
-          <p>Practice technical and HR questions to improve your interview skills.</p>
-          
-          <div id="interviewSection" style="margin-top: 1.5rem;">
-            <label>Interview Type
-              <select id="interviewType">
-                <option value="technical">Technical</option>
-                <option value="hr">HR</option>
-                <option value="both">Both</option>
-              </select>
-            </label>
-            <button class="btn-primary" onclick="startMockInterview()" style="width: 100%; margin-top: 1rem;">Start Interview</button>
+          <h3>🎤 AI Simulation Lab</h3>
+          <p>Practice with adaptive technical and behavioral assessments.</p>
+          <div id="interviewSection" style="margin-top: 2rem;">
+            <button class="btn-primary btn-lg" onclick="startAIInterview()">🚀 Start Mock Session</button>
           </div>
-
-          <div id="mockQuestion" style="display: none; margin-top: 1.5rem;">
-            <div class="question-box">
-              <p id="questionText"></p>
-              <textarea id="answerBox" placeholder="Your answer..." style="width: 100%; height: 120px; margin-top: 1rem;"></textarea>
-              <div class="row" style="gap: 0.5rem; margin-top: 1rem;">
-                <button class="btn-primary" onclick="submitAnswer()">Submit Answer</button>
-                <button class="btn-secondary" onclick="skipQuestion()">Skip Question</button>
+          <div id="mockQuestion" style="display: none; margin-top: 2rem;">
+            <div class="question-container">
+              <span class="badge">Current Question</span>
+              <h4 id="questionText" style="margin-top: 0.5rem;">Preparing...</h4>
+              <textarea id="answerBox" placeholder="Construct your technical response here..." rows="8"></textarea>
+              <div class="row" style="gap: 1rem; margin-top: 1rem;">
+                <button class="btn-primary" onclick="submitAIAnswer()">Submit Answer</button>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="card">
-          <h3>📊 Your Interview Scores</h3>
-          <div id="interviewScores"></div>
-          
-          <div id="feedbackSection" style="display: none; margin-top: 1rem;">
-            <h4>Feedback</h4>
-            <div id="interviewFeedback"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>💡 Interview Tips</h3>
-        <div class="tips-grid">
-          <div class="tip-item">
-            <h4>Technical Questions</h4>
-            <p>Think aloud, explain your approach, and discuss tradeoffs</p>
-          </div>
-          <div class="tip-item">
-            <h4>HR Questions</h4>
-            <p>Be honest, show enthusiasm, and focus on learning mindset</p>
-          </div>
-          <div class="tip-item">
-            <h4>Communication</h4>
-            <p>Speak clearly, maintain confidence, and ask clarifying questions</p>
+        <div id="interviewScores" class="card feedback-card">
+          <h3>📊 Real-time Feedback</h3>
+          <div class="empty-state">
+            <p class="muted">Complete an AI interview to receive detailed performance analysis.</p>
           </div>
         </div>
       </div>
@@ -344,99 +186,49 @@
     <section id="portfolio" class="section">
       <div class="grid-2">
         <div class="card">
-          <h3>📂 Add Project</h3>
+          <h3>📂 Register Project</h3>
           <form id="portfolioForm">
-            <label>Project Name
-              <input type="text" id="projectName" placeholder="My Awesome Project" required>
+            <label>Project Heading
+              <input type="text" id="projectName" placeholder="Real-time Chat App" required>
             </label>
-            <label>Description
-              <textarea id="projectDescription" placeholder="Describe what you built..." rows="4" required></textarea>
+            <label>Core Description
+              <textarea id="projectDescription" placeholder="What technologies did you use? What impact did it have?" required></textarea>
             </label>
-            <label>Technology Stack
-              <input type="text" id="projectTech" placeholder="React, Node.js, MongoDB">
+            <label>Key Technologies
+              <input type="text" id="projectTech" placeholder="Node.js, Socket.io, Redis">
             </label>
-            <label>GitHub URL
-              <input type="url" id="projectGithub" placeholder="https://github.com/username/repo">
+            <label>GitHub / Source Link
+              <input type="url" id="projectGithub" placeholder="https://github.com/..." required>
             </label>
-            <label>Live Demo URL (Optional)
-              <input type="url" id="projectLive" placeholder="https://project-demo.com">
-            </label>
-            <button type="submit" class="btn-primary">Add to Portfolio</button>
+            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Add to Portfolio</button>
           </form>
         </div>
-
         <div class="card">
-          <h3>📊 Portfolio Overview</h3>
-          <div id="portfolioStats"></div>
+          <h3>🏆 Verified Showcase</h3>
+          <p class="muted">Recruiters prioritize candidates with tangible evidence of skill.</p>
+          <div id="portfolioList" style="margin-top: 1.5rem;"></div>
         </div>
-      </div>
-
-      <div class="card">
-        <h3>📂 Your Projects</h3>
-        <div id="portfolioList"></div>
       </div>
     </section>
 
     <!-- APPLICATIONS SECTION -->
     <section id="applications" class="section">
       <div class="card">
-        <h3>📋 My Applications</h3>
-        <div class="status-filter">
-          <button class="filter-btn active" onclick="filterApplications('All')">All</button>
-          <button class="filter-btn" onclick="filterApplications('Applied')">Applied</button>
-          <button class="filter-btn" onclick="filterApplications('Under Review')">Under Review</button>
-          <button class="filter-btn" onclick="filterApplications('Interview Scheduled')">Interview</button>
-          <button class="filter-btn" onclick="filterApplications('Selected')">Selected</button>
-          <button class="filter-btn" onclick="filterApplications('Rejected')">Rejected</button>
-        </div>
+        <h3>📋 Application Pipeline</h3>
+        <p class="muted">Tracking your journey across different organizations.</p>
       </div>
-
-      <div id="applicationsList"></div>
-
-      <template id="applicationCardTemplate">
-        <div class="card application-card">
-          <div class="row" style="justify-content: space-between;">
-            <div>
-              <h4 style="margin: 0;">{{jobTitle}}</h4>
-              <p class="muted" style="margin: 0;">{{companyName}}</p>
-            </div>
-            <span class="status-badge status-{{status}}">{{status}}</span>
-          </div>
-          
-          <p style="margin: 1rem 0 0.5rem 0; font-size: 0.9rem;">Applied: {{appliedDate}}</p>
-          
-          {{#hasRejection}}
-          <div class="rejection-info">
-            <p><strong>📝 Rejection Reason:</strong> {{rejectionReason}}</p>
-            <p><strong>💡 Improvement Tips:</strong></p>
-            <p>{{rejectionFeedback}}</p>
-          </div>
-          {{/hasRejection}}
-          
-          <div class="row" style="gap: 0.5rem; margin-top: 1rem;">
-            <button class="btn-secondary btn-sm">View Details</button>
-            {{#canWithdraw}}
-            <button class="btn-danger btn-sm">Withdraw</button>
-            {{/canWithdraw}}
-          </div>
-        </div>
-      </template>
+      <div id="userApplicationsList" class="jobs-grid"></div>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 FresherJob Portal - Empowering Freshers 🚀</p>
-    <p class="muted">Advanced Features: Skill Tests • Mock Interviews • Portfolio Showcase • AI Job Matching • Rejection Feedback</p>
-  </footer>
-
-  <!-- Floating Help Widget -->
-  <div id="helpWidget" class="help-widget">
-    <button class="help-toggle">💬</button>
-    <div class="help-content">
-      <h4>Need Help?</h4>
-      <p>Visit our documentation or contact support.</p>
+    <div class="container footer-content">
+      <p>© 2026 FresherJob Portal • Advanced Career Ecosystem</p>
+      <div class="footer-links">
+        <span>AI Verification</span> • <span>Smart Matching</span> • <span>Direct Hiring</span>
+      </div>
     </div>
-  </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>

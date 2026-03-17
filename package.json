@@ -9,12 +9,14 @@
     "check": "node --check backend.js && node --check app.js"
   },
   "dependencies": {
-    "mysql2": "^3.11.3",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.11.3",
     "nodemailer": "^6.9.1",
-    "uuid": "^9.0.0",
-    "cors": "^2.8.5"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

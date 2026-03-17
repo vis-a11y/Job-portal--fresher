@@ -1,22 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recruiter Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruiter Dashboard - FresherJob Ecosystem</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Recruiter Dashboard</h1>
+  <header class="topbar">
+    <div class="row" style="gap: 1rem;">
+      <h1 class="logo">🚀 RecruiterPro</h1>
+      <span class="tagline">Manage your future talent pool</span>
+    </div>
     <nav>
-      <a href="login.html">Login</a>
-      <a href="index.html">Student Portal</a>
+      <a href="#" class="nav-link active" data-section="recruiterDashboard">Post a Job</a>
+      <a href="#" class="nav-link" data-section="manageJobs">Active Listings</a>
+      <a href="#" class="nav-link" data-section="viewApplications">View Applicants</a>
+      <a href="index.html" class="nav-link">Candidate View</a>
+      <button id="logoutBtn" class="btn-logout">Logout</button>
     </nav>
   </header>
+
   <main class="container">
-    <p>This page will contain recruiter features (posting jobs, reviews, analytics).</p>
-    <p>Coming soon!</p>
+    <!-- POST JOB SECTION -->
+    <section id="recruiterDashboard" class="section active">
+      <div class="card hero" style="display: flex; gap: 2rem; align-items: center;">
+        <div class="hero-image" style="flex: 0 0 250px;">
+          <img src="assets/recruiter-hero.png" alt="Recruiter Intelligence" style="width: 100%; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
+        </div>
+        <div style="flex: 1;">
+          <h2>📢 Post a New Fresher Opportunity</h2>
+          <p>Target active candidates based on their verified potential score and technical showcase.</p>
+        </div>
+      </div>
+
+      <div class="card glass">
+        <h3>📄 Job Details</h3>
+        <form id="postJobForm">
+          <div class="grid-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label>Role / Position Title</label>
+              <input type="text" id="jobTitle" placeholder="Frontend Developer (React)" required>
+            </div>
+            <div class="form-group">
+              <label>Company Display Name</label>
+              <input type="text" id="jobCompany" placeholder="Google / Amazon / Startup" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Detailed Description</label>
+            <textarea id="jobDescription" placeholder="What will they be working on? What's the impact?" rows="6" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Required Skills (comma-separated)</label>
+            <input type="text" id="jobSkills" placeholder="JavaScript, Node.js, SQL" required>
+          </div>
+          <div class="grid-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label>Job Type</label>
+              <select id="jobType">
+                <option value="Full-Time">Full-Time (Entry Level)</option>
+                <option value="Internship">Internship (Paid)</option>
+                <option value="Both">Both</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" id="jobLocation" placeholder="Bangalore / Remote">
+            </div>
+          </div>
+          <div class="grid-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label>Salary Range Min (₹)</label>
+              <input type="number" id="jobSalaryMin" placeholder="500000">
+            </div>
+            <div class="form-group">
+              <label>Salary Range Max (₹)</label>
+              <input type="number" id="jobSalaryMax" placeholder="1200000">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%;">🚀 Publish Job Listing</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- MANAGE JOBS SECTION -->
+    <section id="manageJobs" class="section">
+      <div class="card">
+        <h3>🏢 Your Active Listings</h3>
+        <p class="muted">Manage and track performance of your job postings.</p>
+      </div>
+      <div id="recruiterJobsList" class="jobs-grid">
+        <div class="card"><p class="muted">Fetching your job history...</p></div>
+      </div>
+    </section>
+
+    <!-- VIEW APPLICATIONS SECTION -->
+    <section id="viewApplications" class="section">
+      <div class="card">
+        <h3>👥 Candidate Applications</h3>
+        <p class="muted">Review applicants sorted by AI Matching Score.</p>
+      </div>
+      <div id="applicantsList" class="jobs-grid">
+        <div class="card"><p class="muted">Select a job from 'Active Listings' to see applicants.</p></div>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 RecruiterPro • Powered by FresherJob Ecosystem</p>
+    </div>
+  </footer>
+
+  <script src="recruiter-app.js"></script>
 </body>
 </html>

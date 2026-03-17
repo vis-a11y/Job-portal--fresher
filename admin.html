@@ -1,22 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - FresherJob Ecosystem</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Admin Panel</h1>
+  <header class="topbar">
+    <div class="row" style="gap: 1rem;">
+      <h1 class="logo">🚀 PortalAdmin</h1>
+      <span class="tagline">Maintain platform ecosystem integrity</span>
+    </div>
     <nav>
-      <a href="login.html">Login</a>
-      <a href="index.html">Student Portal</a>
+      <a href="#" class="nav-link active" data-section="systemOverview">System Overview</a>
+      <a href="#" class="nav-link" data-section="manageUsers">Manage Users</a>
+      <a href="#" class="nav-link" data-section="verifyJobs">Verify Listings</a>
+      <a href="index.html" class="nav-link">Candidate View</a>
+      <button id="logoutBtn" class="btn-logout">Logout</button>
     </nav>
   </header>
+
   <main class="container">
-    <p>Admin interfaces and management tools will be built here.</p>
-    <p>Coming soon!</p>
+    <!-- SYSTEM OVERVIEW -->
+    <section id="systemOverview" class="section active">
+      <div class="card hero-compact">
+        <h2>📊 Platform Pulse</h2>
+        <p>Real-time analytics for the FresherJob ecosystem.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card glass">
+          <h3>Total Candidate Pool</h3>
+          <p class="highlight" id="adminTotalCandidates">Loading...</p>
+        </div>
+        <div class="card glass">
+          <h3>Active Recruiters</h3>
+          <p class="highlight" id="adminTotalRecruiters">Loading...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MANAGE USERS -->
+    <section id="manageUsers" class="section">
+      <div class="card">
+        <h3>👥 Registered Ecosystem Users</h3>
+        <p class="muted">Click on any user to manage their role or delete profile.</p>
+      </div>
+      <div id="adminUsersList" class="jobs-grid">
+        <div class="card"><p class="muted">Scanning records...</p></div>
+      </div>
+    </section>
+
+    <!-- VERIFY JOBS -->
+    <section id="verifyJobs" class="section">
+      <div class="card">
+        <h3>🛡️ Job Verification Pipeline</h3>
+        <p class="muted">Check and approve new job listings before they go live for candidates.</p>
+      </div>
+      <div id="adminJobsList" class="jobs-grid">
+        <div class="card"><p class="muted">Checking verification queue...</p></div>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 PortalAdmin • Advanced Ecosystem Management</p>
+    </div>
+  </footer>
+
+  <script src="admin-app.js"></script>
 </body>
 </html>
