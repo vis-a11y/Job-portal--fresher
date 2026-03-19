@@ -75,14 +75,42 @@ function showNotification(message, type = 'success') {
 // Logic
 async function fetchSystemSummary() {
   try {
-     // Backend doesn't have an admin specific aggregate API yet, so we emulate or add it logic
-     // For now, let's just use /api/jobs and count or similar
+     const data = await apiCall('/admin/summary');
+     document.getElementById('adminTotalCandidates').textContent = data.totalUsers;
+     document.getElementById('adminTotalRecruiters').textContent = data.totalJobs; // Or specific count if available
+     
+     // Update stats on dashboard
+     const stats = document.querySelectorAll('.stat-val');
+     if (stats[0]) stats[0].textContent = data.totalUsers;
+     if (stats[1]) stats[1].textContent = data.totalJobs;
+     
+     renderRecentUsers(data.recentUsers);
+     
+     // Also fetch jobs for the verification list
      const jobs = await apiCall('/jobs');
-     document.getElementById('adminTotalCandidates').textContent = '2.4k'; // Simulation
-     document.getElementById('adminTotalRecruiters').textContent = '150+'; // Simulation
      appState.jobs = jobs;
      renderJobs();
   } catch (err) {}
+}
+
+function renderRecentUsers(users) {
+  const container = document.getElementById('adminUsersList');
+  if (!container) return;
+  container.innerHTML = users.length ? '' : '<p class="muted">No recent users.</p>';
+  users.forEach(u => {
+    const card = document.createElement('div');
+    card.className = 'card glass';
+    card.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h4 style="margin:0;">${u.name}</h4>
+          <p class="muted">${u.email} · ${u.role}</p>
+        </div>
+        <span class="badge">${new Date(u.created_at).toLocaleDateString()}</span>
+      </div>
+    `;
+    container.appendChild(card);
+  });
 }
 
 function renderJobs() {

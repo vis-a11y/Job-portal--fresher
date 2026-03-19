@@ -242,15 +242,31 @@ function openEditJob(id, title, skills, desc) {
   openModal('editJobModal');
 }
 
-function saveJobEdit() {
-  showNotification('✅ Job listing updated successfully!');
-  closeModal('editJobModal');
+async function saveJobEdit() {
+  const id = document.getElementById('editJobId').value;
+  const data = {
+    title: document.getElementById('editJobTitle').value,
+    skills_required: document.getElementById('editJobSkills').value,
+    description: document.getElementById('editJobDesc').value,
+    // Add other fields from the original job if necessary
+  };
+  
+  try {
+    await apiCall(`/jobs/${id}`, 'PATCH', data);
+    showNotification('✅ Job listing updated successfully!');
+    closeModal('editJobModal');
+    loadJobManagement();
+  } catch (err) {}
 }
 
-function confirmDeleteJob(jobId) {
+async function confirmDeleteJob(jobId) {
   if (confirm('⚠️ Are you sure you want to delete this job listing? This cannot be undone.')) {
-    showNotification('🗑️ Job deleted from the marketplace.', 'error');
-    loadJobManagement();
+    try {
+      await apiCall(`/jobs/${jobId}`, 'DELETE');
+      showNotification('🗑️ Job deleted from the marketplace.', 'error');
+      loadJobManagement();
+      loadAnalytics(); 
+    } catch (err) {}
   }
 }
 
@@ -1149,6 +1165,8 @@ window.viewJobApplicants = viewJobApplicants;
 window.handleStatusUpdate = handleStatusUpdate;
 window.confirmDeleteJob = confirmDeleteJob;
 window.openEditJob = openEditJob;
+window.saveJobEdit = saveJobEdit;
+window.closeModal = closeModal;
 window.toggleNotifications = toggleNotifications;
 window.saveInterview = saveInterview;
 window.showNotification = showNotification;

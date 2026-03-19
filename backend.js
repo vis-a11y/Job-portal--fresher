@@ -92,11 +92,25 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
-    const [users] = await pool.query('SELECT id, name, email, role, college, branch, graduation_year, about, readiness_score FROM users WHERE id = ?', [req.user.id]);
+    const [users] = await pool.query('SELECT id, name, email, role, college, branch, graduation_year, about, readiness_score, contact_number FROM users WHERE id = ?', [req.user.id]);
     const [userSkills] = await pool.query('SELECT skill_name, proficiency FROM skills WHERE user_id = ?', [req.user.id]);
     const [userProjects] = await pool.query('SELECT * FROM projects WHERE user_id = ?', [req.user.id]);
     
     res.json({ ...users[0], skills: userSkills, projects: userProjects });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update user profile
+app.put('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { name, college, branch, graduation_year, contact_number, about } = req.body;
+    await pool.query(
+      'UPDATE users SET name = ?, college = ?, branch = ?, graduation_year = ?, contact_number = ?, about = ? WHERE id = ?',
+      [name, college, branch, graduation_year, contact_number, about, req.user.id]
+    );
+    res.json({ message: 'Profile updated successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -174,6 +188,38 @@ app.post('/api/jobs', authenticateToken, async (req, res) => {
       [req.user.id, title, company, description, skills_required, job_type, salary_range_min, salary_range_max, location]
     );
     res.status(201).json({ message: 'Job posted successfully', jobId: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update job
+app.patch('/api/jobs/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { id } = req.params;
+    const { title, description, skills_required, job_type, salary_range_min, salary_range_max, location } = req.body;
+    await pool.query(
+      'UPDATE jobs SET title = ?, description = ?, skills_required = ?, job_type = ?, salary_range_min = ?, salary_range_max = ?, location = ? WHERE id = ? AND (recruiter_id = ? OR ? = "admin")',
+      [title, description, skills_required, job_type, salary_range_min, salary_range_max, location, id, req.user.id, req.user.role]
+    );
+    res.json({ message: 'Job updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete job
+app.delete('/api/jobs/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM jobs WHERE id = ? AND (recruiter_id = ? OR ? = "admin")', [id, req.user.id, req.user.role]);
+    res.json({ message: 'Job deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -344,7 +390,7 @@ app.get('/api/recruiter/reverse-hiring', authenticateToken, async (req, res) => 
 
 // Simulation & Prediction
 app.get('/api/recruiter/simulate/:userId', authenticateToken, async (req, res) => {
-  if (req.user.role !== 'recruiter') return res.status(403).json({ error: 'Access denied.' });
+  if (req.user.role !== 'recruiter' && req.user.role !== 'admin') return res.status(403).json({ error: 'Access denied.' });
   res.json({
     probability: 94.2,
     learningSpeed: 'Superfast (Top 1%)',
@@ -352,6 +398,26 @@ app.get('/api/recruiter/simulate/:userId', authenticateToken, async (req, res) =
     culturalFit: 82,
     roadmap: ['Year 1: Mid-Level Engineer', 'Year 2: Senior Engineer / Team Lead']
   });
+});
+
+// Admin Dashboard Summary
+app.get('/api/admin/summary', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Access denied.' });
+  try {
+    const [users] = await pool.query('SELECT COUNT(*) as count FROM users');
+    const [jobs] = await pool.query('SELECT COUNT(*) as count FROM jobs');
+    const [apps] = await pool.query('SELECT COUNT(*) as count FROM applications');
+    const [recentUsers] = await pool.query('SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC LIMIT 10');
+    
+    res.json({
+      totalUsers: users[0].count,
+      totalJobs: jobs[0].count,
+      totalApplications: apps[0].count,
+      recentUsers
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Serve Frontend Catch-all (Middleware approach)

@@ -176,12 +176,21 @@ async function handleSkillUpdate(e) {
   e.preventDefault();
   const skillsStr = document.getElementById('profileSkills').value;
   const skills = skillsStr.split(',').map(s => s.trim()).filter(s => s);
+  
+  if (!skills.length) return;
+
   try {
-    // Clear old skills if needed or just add new ones. For simplicity, we just add.
+    // In a real app we might want a PUT /api/user/skills to overwrite all,
+    // but for now we iterate. Since backend doesn't check for existing, 
+    // we just add new ones manually here by checking local state if we had it,
+    // but better to just show how it should be done.
     for (const skill of skills) {
-      await apiCall('/user/skills', 'POST', { skill_name: skill, proficiency: 'Intermediate' });
+      const exists = appState.user.skills && appState.user.skills.some(s => s.skill_name.toLowerCase() === skill.toLowerCase());
+      if (!exists) {
+        await apiCall('/user/skills', 'POST', { skill_name: skill, proficiency: 'Intermediate' });
+      }
     }
-    showNotification('Skills updated!');
+    showNotification('Skills synced successfully!');
     fetchProfile();
   } catch (err) {}
 }
@@ -196,9 +205,12 @@ async function handleProfileUpdate(e) {
     contact_number: document.getElementById('profileContact').value,
     about: document.getElementById('profileAbout').value
   };
-  // Ideally we need a PUT /api/user/profile. For now, let's assume it exists or we use this for stats update
-  showNotification('Profile saved successfully!');
-  fetchProfile();
+  
+  try {
+    await apiCall('/user/profile', 'PUT', data);
+    showNotification('Profile updated successfully!');
+    fetchProfile();
+  } catch (err) {}
 }
 
 // ============================================

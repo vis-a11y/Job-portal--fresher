@@ -261,6 +261,10 @@
                   <input type="text" id="projectName" placeholder="e.g. DeFi Staking Platform" required>
                 </div>
                 <div class="form-group">
+                  <label>GitHub Link</label>
+                  <input type="text" id="projectGithub" placeholder="https://github.com/..." required>
+                </div>
+                <div class="form-group">
                   <label>Tech Stack</label>
                   <input type="text" id="projectTech" placeholder="Solidity, React, Hardhat">
                 </div>
@@ -459,23 +463,7 @@
           <div class="grid-2" id="projectSuggestions" style="margin-top:0;"></div>
         </section>
 
-        <!-- PORTFOLIO SECTION -->
-        <section id="portfolio" class="section">
-          <div class="card"><h3>🏆 Verified Portfolio</h3><p class="muted">Showcase your real work. Projects speak louder than marks.</p></div>
-          <div class="card glass">
-            <h4>➕ Add New Project</h4>
-            <form id="projectForm" style="margin-top:1rem;">
-              <div class="grid-2">
-                <div class="form-group"><label>Project Name</label><input type="text" id="projectName" placeholder="e.g. Task Manager App"></div>
-                <div class="form-group"><label>GitHub Link</label><input type="url" id="projectLink" placeholder="https://github.com/..."></div>
-              </div>
-              <div class="form-group"><label>Tech Stack</label><input type="text" id="projectTech" placeholder="React, Node.js, MongoDB"></div>
-              <div class="form-group"><label>Description</label><textarea id="projectDesc" rows="3" placeholder="What does it do? What problem does it solve?"></textarea></div>
-              <button type="submit" class="btn btn-primary">🚀 Add to Portfolio</button>
-            </form>
-          </div>
-          <div id="portfolioList" class="jobs-grid"></div>
-        </section>
+<!-- Removed duplicate portfolio section -->
 
         <!-- APPLICATIONS SECTION -->
         <section id="applications" class="section">
