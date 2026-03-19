@@ -311,8 +311,51 @@ app.get('/api/recommend-career', authenticateToken, async (req, res) => {
   }
 });
 
-// Serve Frontend Catch-all (Express 5 compatible)
-app.get('/*', (req, res, next) => {
+// --- ADVANCED RECRUITER FEATURES ---
+
+// Get Talent Pools
+app.get('/api/recruiter/talent-pools', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter') return res.status(403).json({ error: 'Access denied.' });
+  // Mocking since DB schema doesn't have pools yet
+  const pools = [
+    { name: 'Top React Freshers', applicants: 124, avgScore: 88, hot: true, icon: '⚛️' },
+    { name: 'Java Spring Gurus', applicants: 86, avgScore: 82, hot: false, icon: '☕' },
+    { name: 'Python Data Alchemists', applicants: 156, avgScore: 91, hot: true, icon: '🐍' }
+  ];
+  res.json(pools);
+});
+
+// Get Train & Hire Programs
+app.get('/api/recruiter/train-hire', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter') return res.status(403).json({ error: 'Access denied.' });
+  const programs = [
+    { role: 'Junior React Dev', company: 'Google (Partner)', training: '3 Months React + TS Masterclass', enrolled: 450, slots: 20, status: 'Training Phase' },
+    { role: 'Python Automation', company: 'Amazon (Partner)', training: 'Backend with Django & AWS Lab', enrolled: 1200, slots: 50, status: 'Selection Phase' }
+  ];
+  res.json(programs);
+});
+
+// Reverse Hiring Candidates
+app.get('/api/recruiter/reverse-hiring', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter') return res.status(403).json({ error: 'Access denied.' });
+  const [candidates] = await pool.query('SELECT name, readiness_score as score FROM users WHERE role = "fresher" ORDER BY readiness_score DESC LIMIT 10');
+  res.json(candidates.map(c => ({ ...c, bids: Math.floor(Math.random()*15), topBid: '₹15 LPA', skills: ['React','Node.js'] })));
+});
+
+// Simulation & Prediction
+app.get('/api/recruiter/simulate/:userId', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'recruiter') return res.status(403).json({ error: 'Access denied.' });
+  res.json({
+    probability: 94.2,
+    learningSpeed: 'Superfast (Top 1%)',
+    commitment: 'High',
+    culturalFit: 82,
+    roadmap: ['Year 1: Mid-Level Engineer', 'Year 2: Senior Engineer / Team Lead']
+  });
+});
+
+// Serve Frontend Catch-all (Middleware approach)
+app.use((req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   res.sendFile(path.join(__dirname, 'index.html'));
 });

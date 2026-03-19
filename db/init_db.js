@@ -65,7 +65,7 @@ async function init() {
 
     // Add Skills
     const skills = [
-      [candidateId, 'JavaScript', 'Advanced'],
+      [candidateId, 'JavaScript', 'Expert'],
       [candidateId, 'Node.js', 'Intermediate'],
       [candidateId, 'React', 'Intermediate'],
       [candidateId, 'SQL', 'Beginner']

@@ -7,12 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="auth-body">
-  <nav class="auth-nav">
+  <nav class="auth-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem;">
     <h1>🚀 FresherJob</h1>
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span class="theme-label" id="themeIcon">🌙</span>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"></button>
+      <span class="theme-label" id="themeLabel" style="color: var(--text-muted);">Dark</span>
+    </div>
   </nav>
 
-  <main class="auth-container">
-    <div class="card auth-card glass">
+  <main class="auth-wrapper">
+    <div class="card auth-card glass shimmer">
       <h2>Welcome Back</h2>
       <p class="muted">Access your career dashboard and job matches.</p>
       
@@ -26,10 +31,10 @@
           <input type="password" id="loginPassword" placeholder="Enter your password" required />
         </div>
         
-        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Login</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;">Login to Portal</button>
         
-        <div style="margin-top: 1.5rem; text-align: center;">
-          <p class="muted">Don't have an account? <a href="register.html">Register for Free</a></p>
+        <div style="margin-top: 2rem; text-align: center;">
+          <p class="muted" style="font-size: 0.9rem;">Don't have an account? <a href="register.html" style="color: var(--primary-bright); font-weight: 600; text-decoration: none;">Register Now</a></p>
         </div>
       </form>
     </div>

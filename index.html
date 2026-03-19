@@ -3,232 +3,515 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FresherJob - Master Career Ecosystem</title>
+  <title>FresherJob Premium - Career Ecosystem</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="topbar">
-    <div class="row" style="gap: 1rem;">
-      <h1 class="logo">🚀 FresherJob</h1>
-      <span class="tagline">Empowering the next generation of talent</span>
-    </div>
-    <nav>
-      <a href="#" class="nav-link active" data-section="dashboard">Dashboard</a>
-      <a href="#" class="nav-link" data-section="profile">Profile</a>
-      <a href="#" class="nav-link" data-section="jobs">Explore Jobs</a>
-      <a href="#" class="nav-link" data-section="roadmap">Job Matching</a>
-      <a href="#" class="nav-link" data-section="interview">AI Interview</a>
-      <a href="#" class="nav-link" data-section="portfolio">Portfolio</a>
-      <a href="#" class="nav-link" data-section="applications">Applications</a>
-      <button id="logoutBtn" class="btn-logout">Logout</button>
-    </nav>
-  </header>
-
-  <main class="container">
-    <!-- DASHBOARD SECTION -->
-    <section id="dashboard" class="section active">
-      <div class="card hero">
-        <div class="hero-image" style="flex: 0 0 280px; text-align: center;">
-          <img src="assets/fresher-hero.png" alt="Fresher Career Rocket" style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        </div>
-        <div style="flex: 1;">
-          <h2>Welcome to your Career Hub! 🎓</h2>
-          <p id="welcomeName" style="font-weight:600; font-size: 1.25rem; color: #3b82f6; margin: 0.5rem 0;"></p>
-          <p>This is your premium ecosystem to bridge the skill gap and land high-potential roles.</p>
-          <div style="margin-top: 1.5rem;">
-            <button class="btn-primary" onclick="updatePotentialScore()">✨ Recalculate AI Score</button>
-          </div>
-        </div>
-        <div class="score-card">
-          <p>🎯 Fresher Potential Score</p>
-          <strong id="readinessScore">0</strong>
-          <div class="score-breakdown">
-            <span>Skills (40%)</span> • <span>Projects (30%)</span> • <span>Edu (30%)</span>
-          </div>
-        </div>
+  <div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1 class="logo">🚀 FresherJob</h1>
+        <span class="tagline">Master Entry-Level Portal</span>
       </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="feed"><span>🏠</span> Feed</a>
+        <a href="#" class="sidebar-link" data-section="dashboard"><span>📊</span> Career Stats</a>
+        <a href="#" class="sidebar-link" data-section="jobs"><span>💼</span> Jobs Market</a>
+        <a href="#" class="sidebar-link" data-section="roadmap"><span>🧠</span> Smart Matching</a>
+        <a href="#" class="sidebar-link" data-section="skillTracker"><span>📈</span> Skill Tracker</a>
+        <a href="#" class="sidebar-link" data-section="hireWithout"><span>⚡</span> Hire Me Now</a>
+        <a href="#" class="sidebar-link" data-section="skillAlerts"><span>🔔</span> Skill Alerts</a>
+        <a href="#" class="sidebar-link" data-section="microTasks"><span>🎯</span> Gig Tasks</a>
+        <a href="#" class="sidebar-link" data-section="learningPath"><span>🛤️</span> Learning Path</a>
+        <a href="#" class="sidebar-link" data-section="projectGen"><span>🤖</span> Project AI</a>
+        <a href="#" class="sidebar-link" data-section="portfolio"><span>🏆</span> Portfolio</a>
+        <a href="#" class="sidebar-link" data-section="applications"><span>📋</span> Applications</a>
+        <a href="#" class="sidebar-link" data-section="profile"><span>👤</span> My Profile</a>
+      </nav>
 
-      <div class="grid-2">
-        <div class="card glass">
-          <h3>🧠 Intelligence Briefing</h3>
-          <p>Our AI analyzes market trends and your profile to provide:</p>
-          <ul class="advanced-list">
-            <li><strong>Skill Gap Detection</strong> - Instant requirement matching</li>
-            <li><strong>Dynamic Compatibility</strong> - Real-time job matching scores</li>
-            <li><strong>Career Recommendations</strong> - Data-driven role suggestions</li>
-          </ul>
-        </div>
-
-        <div class="card glass">
-          <h3>🎯 Quick Performance Stats</h3>
-          <div class="stat-row">
-            <span>Verified Skills:</span>
-            <strong id="skillsCount" class="highlight">0</strong>
-          </div>
-          <div class="stat-row">
-            <span>Active Projects:</span>
-            <strong id="projectsCount" class="highlight">0</strong>
-          </div>
-          <div class="stat-row">
-            <span>Applied Jobs:</span>
-            <strong id="applicationsCount" class="highlight">0</strong>
-          </div>
-        </div>
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn btn-logout btn-sm">Sign Out Safely</button>
       </div>
-    </section>
+    </aside>
 
-    <!-- PROFILE SECTION -->
-    <section id="profile" class="section">
-      <div class="grid-2">
-        <div class="card">
-          <h3>👤 Identity & Background</h3>
-          <form id="profileUpdateForm">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="profileName" placeholder="Enter your full name">
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="content-header">
+        <div class="search-bar" style="flex: 1; max-width: 500px;">
+          <input type="text" id="globalSearch" placeholder="Search for roles, skills, or companies..." style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-dark);">
+        </div>
+        <div class="user-actions row" style="gap: 0.75rem; align-items: center;">
+          <!-- Light/Dark Mode Toggle -->
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="theme-label" id="themeIcon">🌙</span>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"></button>
+            <span class="theme-label" id="themeLabel">Dark</span>
+          </div>
+          <div class="profile-thumb" id="userAvatarBtn" style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer;">V</div>
+        </div>
+      </header>
+
+      <div class="container">
+        <!-- FEED SECTION -->
+        <section id="feed" class="section active">
+          <div class="grid-2">
+            <div style="flex: 2;">
+              <div class="card glass" style="padding: 1.5rem;">
+                <div class="row">
+                  <div style="width: 45px; height: 45px; background: var(--border-dark); border-radius: 50%;"></div>
+                  <input type="text" placeholder="Share an achievement or ask for career advice..." style="flex:1; border: none; background: transparent; padding: 1rem;">
+                </div>
+                <div class="row" style="margin-top: 1rem; justify-content: space-between;">
+                  <button class="btn btn-secondary btn-sm">📷 Photo</button>
+                  <button class="btn btn-secondary btn-sm">🎥 Video</button>
+                  <button class="btn btn-primary btn-sm">Post Update</button>
+                </div>
+              </div>
+
+              <!-- Mock Feed Item 1 -->
+              <div class="card feed-card">
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?k=80&w=1200" alt="Career Growth" class="feed-image" style="height: 300px;">
+                <div class="feed-content">
+                  <div class="row" style="margin-bottom: 1rem;">
+                    <div class="badge-verified">Top Career Advice</div>
+                    <span class="muted" style="font-size: 0.8rem;">2 hours ago</span>
+                  </div>
+                  <h3>5 Tech Skills Every Fresher Needs in 2026</h3>
+                  <p class="muted" style="margin-top: 0.5rem;">As AI matures, companies are looking for candidates who can blend coding with system design and problem-solving...</p>
+                  <div class="row" style="margin-top: 1.5rem; border-top: 1px solid var(--border-dark); padding-top: 1rem;">
+                    <button class="btn btn-secondary btn-sm" style="border:none;">👍 Like (24)</button>
+                    <button class="btn btn-secondary btn-sm" style="border:none;">💬 Comment (12)</button>
+                    <button class="btn btn-secondary btn-sm" style="border:none;">🔗 Share</button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="grid-2" style="gap: 1rem;">
-              <label>Email (Verified)
-                <input type="email" id="profileEmail" disabled>
-              </label>
-              <label>Contact Number
-                <input type="tel" id="profileContact" placeholder="+91">
-              </label>
-            </div>
-            <label>College/University
-              <input type="text" id="profileCollege" placeholder="Your University">
-            </label>
-            <div class="grid-2" style="gap: 1rem;">
-              <label>Branch
-                <input type="text" id="profileBranch" placeholder="Computer Science">
-              </label>
-              <label>Graduation Year
-                <input type="number" id="profileYear" placeholder="2025">
-              </label>
-            </div>
-            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Save Profile</button>
-          </form>
-        </div>
 
-        <div class="card">
-          <h3>📋 Skills & Bio</h3>
-          <form id="skillsForm">
-            <label>Tech Stack (Comma-separated)
-              <input type="text" id="profileSkills" placeholder="JavaScript, Node.js, SQL, React">
-            </label>
-            <label>Professional Bio
-              <textarea id="profileAbout" rows="6" placeholder="Describe your technical interests and projects..."></textarea>
-            </label>
-            <div class="row" style="gap: 1rem; margin-top: 1.5rem;">
-              <button type="submit" class="btn-primary" style="flex:1;">Update Skills</button>
-              <button type="button" class="btn-secondary" onclick="simulateResumeParsing()" style="flex:1;">✨ AI Parse Resume</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- JOBS SECTION -->
-    <section id="jobs" class="section">
-      <div class="card filters-container">
-        <h3>🔍 Global Fresher Marketplace</h3>
-        <p class="muted">Explore roles specifically designed for entry-level talent.</p>
-        <div class="row" style="gap: 1rem; margin-top: 1.5rem;">
-          <input type="text" id="jobSearch" placeholder="Filter by skills, title, or company..." style="flex:1;">
-          <button class="btn-primary" onclick="fetchJobs()">Search Jobs</button>
-        </div>
-      </div>
-      <div id="jobsList" class="jobs-grid"></div>
-    </section>
-
-    <!-- ROADMAP SECTION -->
-    <section id="roadmap" class="section">
-      <div class="card hero-compact">
-        <h2>🧠 Smart Job Matching</h2>
-        <p>Roles curated specifically for your verified tech stack.</p>
-      </div>
-      <div id="matchedJobsList" class="jobs-grid">
-         <div class="card"><p class="muted">Loading matched opportunities...</p></div>
-      </div>
-    </section>
-
-    <!-- INTERVIEW SECTION -->
-    <section id="interview" class="section">
-      <div class="grid-2">
-        <div class="card">
-          <h3>🎤 AI Simulation Lab</h3>
-          <p>Practice with adaptive technical and behavioral assessments.</p>
-          <div id="interviewSection" style="margin-top: 2rem;">
-            <button class="btn-primary btn-lg" onclick="startAIInterview()">🚀 Start Mock Session</button>
-          </div>
-          <div id="mockQuestion" style="display: none; margin-top: 2rem;">
-            <div class="question-container">
-              <span class="badge">Current Question</span>
-              <h4 id="questionText" style="margin-top: 0.5rem;">Preparing...</h4>
-              <textarea id="answerBox" placeholder="Construct your technical response here..." rows="8"></textarea>
-              <div class="row" style="gap: 1rem; margin-top: 1rem;">
-                <button class="btn-primary" onclick="submitAIAnswer()">Submit Answer</button>
+            <div style="flex: 1;">
+              <div class="card glass">
+                <h4>🔥 Trending Careers</h4>
+                <ul class="advanced-list">
+                  <li>AI Prompt Engineer <span class="badge" style="float:right;">+40%</span></li>
+                  <li>Cybersecurity Analyst <span class="badge" style="float:right;">+25%</span></li>
+                  <li>Full Stack Architect <span class="badge" style="float:right;">+18%</span></li>
+                </ul>
+              </div>
+              <div class="card glass">
+                <h4>🚀 Career Accelerator</h4>
+                <p class="muted" style="font-size: 0.85rem; margin: 1rem 0;">Get noticed by top recruiters by completing a verified project.</p>
+                <button class="btn btn-primary btn-sm" style="width: 100%;" onclick="document.querySelector('[data-section=portfolio]').click()">Go to Portfolio</button>
               </div>
             </div>
           </div>
-        </div>
-        <div id="interviewScores" class="card feedback-card">
-          <h3>📊 Real-time Feedback</h3>
-          <div class="empty-state">
-            <p class="muted">Complete an AI interview to receive detailed performance analysis.</p>
+        </section>
+
+        <!-- DASHBOARD (Career Stats) SECTION -->
+        <section id="dashboard" class="section">
+          <div class="card hero">
+            <div style="flex: 1;">
+              <h2>Elite Performance Dashboard 📈</h2>
+              <p id="welcomeName" style="font-weight:600; font-size: 1.25rem; color: #3b82f6; margin: 0.5rem 0;"></p>
+              <p>Your journey to industry leadership starts with data-driven insights.</p>
+              <div style="margin-top: 1.5rem;">
+                <button class="btn btn-primary" onclick="updatePotentialScore()">✨ Analyze Market Readiness</button>
+              </div>
+            </div>
+            <div class="score-card">
+              <p>🎯 AI Readiness Quotient</p>
+              <strong id="readinessScore">0</strong>
+              <div class="score-breakdown">
+                <span>Verified Potential Score</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- PORTFOLIO SECTION -->
-    <section id="portfolio" class="section">
-      <div class="grid-2">
-        <div class="card">
-          <h3>📂 Register Project</h3>
-          <form id="portfolioForm">
-            <label>Project Heading
-              <input type="text" id="projectName" placeholder="Real-time Chat App" required>
-            </label>
-            <label>Core Description
-              <textarea id="projectDescription" placeholder="What technologies did you use? What impact did it have?" required></textarea>
-            </label>
-            <label>Key Technologies
-              <input type="text" id="projectTech" placeholder="Node.js, Socket.io, Redis">
-            </label>
-            <label>GitHub / Source Link
-              <input type="url" id="projectGithub" placeholder="https://github.com/..." required>
-            </label>
-            <button type="submit" class="btn-primary" style="margin-top: 1rem;">Add to Portfolio</button>
-          </form>
-        </div>
-        <div class="card">
-          <h3>🏆 Verified Showcase</h3>
-          <p class="muted">Recruiters prioritize candidates with tangible evidence of skill.</p>
-          <div id="portfolioList" style="margin-top: 1.5rem;"></div>
-        </div>
-      </div>
-    </section>
+          <div class="grid-3">
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="skillsCount">0</span>
+              <span class="stat-label">Skills Validated</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="projectsCount">0</span>
+              <span class="stat-label">Live Projects</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="applicationsCount">0</span>
+              <span class="stat-label">Interviews Landed</span>
+            </div>
+          </div>
 
-    <!-- APPLICATIONS SECTION -->
-    <section id="applications" class="section">
-      <div class="card">
-        <h3>📋 Application Pipeline</h3>
-        <p class="muted">Tracking your journey across different organizations.</p>
-      </div>
-      <div id="userApplicationsList" class="jobs-grid"></div>
-    </section>
-  </main>
+          <div class="card glass">
+            <h3>🧠 Talent Intelligence</h3>
+            <div class="stat-row">
+              <span class="stat-label">Global Percentile:</span>
+              <strong class="highlight">Top 15%</strong>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Most Improved Skill:</span>
+              <strong class="highlight" style="color: var(--success);">React.js</strong>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Market Value (Est):</span>
+              <strong class="highlight" style="color: var(--accent-bright);">₹12L - ₹18L</strong>
+            </div>
+          </div>
+        </section>
 
-  <footer>
-    <div class="container footer-content">
-      <p>© 2026 FresherJob Portal • Advanced Career Ecosystem</p>
-      <div class="footer-links">
-        <span>AI Verification</span> • <span>Smart Matching</span> • <span>Direct Hiring</span>
+        <!-- JOBS SECTION (LinkedIn Style Search) -->
+        <section id="jobs" class="section">
+          <div class="card glass">
+            <div class="row" style="justify-content: space-between;">
+              <h3>🔍 Global Jobs Marketplace</h3>
+              <div class="row">
+                <select id="jobFilterType" style="width: 140px; padding: 8px;">
+                  <option value="">All Types</option>
+                  <option value="Full-Time">Full-Time</option>
+                  <option value="Internship">Internship</option>
+                </select>
+              </div>
+            </div>
+            <div class="row" style="gap: 1rem; margin-top: 1.5rem;">
+              <input type="text" id="jobSearch" placeholder="Role title, tech stack (e.g. Node.js), or city..." style="flex:1;">
+              <button class="btn btn-primary" onclick="fetchJobs()">Search Opportunities</button>
+            </div>
+          </div>
+          <div id="jobsList" class="jobs-grid"></div>
+        </section>
+
+        <!-- NETWORK (Companies) SECTION -->
+        <section id="network" class="section">
+          <div class="card">
+            <h3>🏢 Enterprise Network</h3>
+            <p class="muted">Companies actively hiring from the FresherJob ecosystem.</p>
+          </div>
+          <div class="grid-3">
+            <div class="card glass text-center" style="text-align: center;">
+              <div style="font-size: 3rem;">G</div>
+              <h4>Google</h4>
+              <p class="muted" style="font-size: 0.8rem;">12 Freshers Hired</p>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 1rem;">Follow</button>
+            </div>
+            <div class="card glass text-center" style="text-align: center;">
+              <div style="font-size: 3rem; color: #ff9900;">A</div>
+              <h4>Amazon</h4>
+              <p class="muted" style="font-size: 0.8rem;">24 Active Roles</p>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 1rem;">Follow</button>
+            </div>
+            <div class="card glass text-center" style="text-align: center;">
+              <div style="font-size: 3rem; color: #cb202d;">Z</div>
+              <h4>Zomato</h4>
+              <p class="muted" style="font-size: 0.8rem;">8 Verified Hires</p>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 1rem;">Follow</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Application sections etc. (Existing but updated layout) -->
+        <section id="roadmap" class="section">
+          <div class="card hero-compact">
+            <h2>🧠 Smart Job Matching</h2>
+            <p>Proprietary AI matching based on your verified tech stack.</p>
+          </div>
+          <div id="matchedJobsList" class="jobs-grid"></div>
+        </section>
+
+        <section id="interview" class="section">
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>🎤 AI Simulation Lab</h3>
+              <div id="interviewSection" style="margin-top: 2rem; text-align: center; padding: 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem;">🤖</div>
+                <p class="muted" style="margin-bottom: 1.5rem;">Ready to prove your skills in a mock environment?</p>
+                <button class="btn btn-primary btn-lg" onclick="startAIInterview()">🚀 Launch AI Interview</button>
+              </div>
+              <div id="mockQuestion" style="display: none; margin-top: 2rem;">
+                <!-- ... existing question UI ... -->
+                <div class="question-container">
+                  <span class="badge">Session Active</span>
+                  <h4 id="questionText" style="margin-top: 1rem;">Preparing...</h4>
+                  <textarea id="answerBox" placeholder="Draft your technical explanation..." rows="8" style="margin-top:1.5rem;"></textarea>
+                  <button class="btn btn-primary" style="margin-top: 1.5rem; width: 100%;" onclick="submitAIAnswer()">Submit Analysis</button>
+                </div>
+              </div>
+            </div>
+            <div id="interviewScores" class="card feedback-card glass">
+              <h3>📊 Session Feedback</h3>
+              <div class="empty-state">
+                <p class="muted">Finish your session to view AI performance scoring.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="portfolio" class="section">
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>🏆 Verified Showcase</h3>
+              <p class="muted">Projects that set you apart in the ecosystem.</p>
+              <div id="portfolioList" style="margin-top: 1.5rem;"></div>
+            </div>
+            <div class="card">
+              <h3>📂 Add New Achievement</h3>
+              <form id="portfolioForm">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input type="text" id="projectName" placeholder="e.g. DeFi Staking Platform" required>
+                </div>
+                <div class="form-group">
+                  <label>Tech Stack</label>
+                  <input type="text" id="projectTech" placeholder="Solidity, React, Hardhat">
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea id="projectDescription" placeholder="What challenge did you solve?" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Achievement</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- MESSAGES SECTION -->
+        <section id="messages" class="section">
+          <div class="card glass" style="padding: 0; display: flex; height: 650px; overflow: hidden;">
+            <!-- Message List -->
+            <div style="width: 320px; border-right: 1px solid var(--border-dark); display: flex; flex-direction: column;">
+              <header style="padding: 1.5rem; border-bottom: 1px solid var(--border-dark);">
+                <h4>💬 Conversations</h4>
+              </header>
+              <div style="flex: 1; overflow-y: auto;">
+                <div class="sidebar-link active" style="margin: 0.5rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem;">
+                  <div style="width: 40px; height: 40px; background: var(--success); border-radius: 50%;"></div>
+                  <div>
+                    <p style="font-weight: 600; font-size: 0.9rem;">Recruiter @ Google</p>
+                    <p class="muted" style="font-size: 0.8rem;">Hey, we loved your profile!</p>
+                  </div>
+                </div>
+                <!-- Mock list items -->
+                <div class="sidebar-link" style="margin: 0.5rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.8rem;">
+                  <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%;"></div>
+                  <div>
+                    <p style="font-weight: 500; font-size: 0.9rem;">AI Career Assistant</p>
+                    <p class="muted" style="font-size: 0.8rem;">Your mock interview is ready.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Chat Window -->
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <header style="padding: 1.2rem; border-bottom: 1px solid var(--border-dark); background: rgba(255,255,255,0.02);">
+                <div class="row">
+                  <div style="width: 32px; height: 32px; background: var(--success); border-radius: 50%;"></div>
+                  <div>
+                    <p style="font-weight: 700; font-size: 1rem;">Recruiter @ Google</p>
+                    <span class="badge-verified" style="font-size: 0.6rem;">Active Now</span>
+                  </div>
+                </div>
+              </header>
+              <div style="flex: 1; padding: 2rem; overflow-y: auto;">
+                <div style="max-width: 80%; background: var(--border-dark); padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                  <p style="font-size: 0.95rem;">Hello! We saw your performance score on FresherJob. We'd like to invite you for a technical assessment for the React Role.</p>
+                </div>
+                <div style="max-width: 80%; align-self: flex-end; margin-left: auto; background: var(--primary); padding: 1rem; border-radius: 12px;">
+                  <p style="font-size: 0.95rem; color: white;">Thank you! I'm very excited about this opportunity. When should I expect the assessment link?</p>
+                </div>
+              </div>
+              <footer style="padding: 1.5rem; border-top: 1px solid var(--border-dark);">
+                <div class="row">
+                  <input type="text" placeholder="Type a professional message..." style="flex: 1;">
+                  <button class="btn btn-primary btn-sm">Send</button>
+                </div>
+              </footer>
+            </div>
+          </div>
+        </section>
+
+        <!-- ⭐ 1. SKILL EVOLUTION TRACKER -->
+        <section id="skillTracker" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(6,182,212,0.12),rgba(59,130,246,0.08)),var(--card-dark);">
+            <h2>📈 Dynamic Skill Evolution Tracker</h2>
+            <p class="muted">Track how your skills grow over time — unique to FresherJob.</p>
+          </div>
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>🛠️ Your Skill Growth Graph</h3>
+              <p class="muted" style="font-size:0.85rem; margin-bottom:1.5rem;">Progress over last 6 months</p>
+              <div id="skillGrowthChart" style="display:flex; flex-direction:column; gap:1rem;"></div>
+            </div>
+            <div class="card glass">
+              <h3>🎯 Add New Skill Progress</h3>
+              <div class="form-group"><label>Skill Name</label><input type="text" id="newSkillName" placeholder="e.g. React, Python, Docker"></div>
+              <div class="form-group"><label>Proficiency (0–100)</label><input type="range" id="skillRange" min="0" max="100" value="50" oninput="document.getElementById('skillRangeVal').textContent=this.value+'%'"><span id="skillRangeVal" style="color:var(--primary-bright);font-weight:700;">50%</span></div>
+              <div class="form-group"><label>Learning Source</label>
+                <select id="skillSource"><option>Self-Taught</option><option>Udemy</option><option>YouTube</option><option>College</option><option>Project-Based</option></select>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="addSkillEntry()">📈 Log Progress</button>
+            </div>
+          </div>
+          <div class="card glass" style="margin-top:1.5rem;">
+            <h3>🔮 Demand Forecast for Your Skills</h3>
+            <p class="muted" style="margin-bottom:1.5rem; font-size:0.85rem;">AI predicts job market demand in the next 3 months</p>
+            <div id="demandForecast"></div>
+          </div>
+        </section>
+
+        <!-- ⭐ 2. HIRE ME WITHOUT RESUME -->
+        <section id="hireWithout" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(139,92,246,0.15),rgba(59,130,246,0.08)),var(--card-dark); border:1px solid rgba(139,92,246,0.25);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <h2>⚡ Hire Me Without Resume Mode</h2>
+                <p class="muted">Apply using skills, projects & mini-tests. No resume required — eliminates bias.</p>
+                <span class="badge-verified" style="margin-top:0.5rem; display:inline-block;">⭐ Unique Feature — No College/Brand Bias</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>🎯 Your No-Resume Profile</h3>
+              <p class="muted" style="font-size:0.85rem; margin-bottom:1.5rem;">What recruiters see — purely skill-based</p>
+              <div style="background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.2); border-radius:14px; padding:1.5rem; margin-bottom:1rem;">
+                <p style="font-size:0.8rem; color:var(--accent-bright); font-weight:700; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.05em;">Anonymous Candidate #FJ-2891</p>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;" id="hwrSkillsList">
+                  <span class="skill-tag">React</span><span class="skill-tag">Node.js</span><span class="skill-tag">MongoDB</span>
+                </div>
+                <div style="margin-bottom:0.75rem;"><div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span style="font-size:0.85rem;">Potential Score</span><strong style="color:var(--success);">87/100</strong></div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:87%;"></div></div></div>
+                <div><div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;"><span style="font-size:0.85rem;">Projects Completed</span><strong style="color:var(--primary-bright);">3</strong></div></div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="activateHireMode()">⚡ Activate Hire-Me Mode</button>
+            </div>
+            <div class="card glass">
+              <h3>📝 Complete Mini-Assessment</h3>
+              <p class="muted" style="font-size:0.85rem; margin-bottom:1.5rem;">Answer these questions instead of a resume</p>
+              <div class="form-group"><label>What's your strongest skill?</label><input type="text" id="hwrSkill" placeholder="e.g. React with 2 real projects"></div>
+              <div class="form-group"><label>Describe a project you built</label><textarea id="hwrProject" rows="3" placeholder="What problem did it solve? What tech stack?"></textarea></div>
+              <div class="form-group"><label>Quick Code Challenge</label>
+                <textarea rows="4" placeholder="Write a function to reverse a string in JavaScript..." style="font-family: monospace; font-size:0.85rem;"></textarea>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="submitHireWithout()">🚀 Submit Skill Profile</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ⭐ 3. REAL-TIME SKILL DEMAND ALERTS -->
+        <section id="skillAlerts" class="section">
+          <div class="card" style="background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(239,68,68,0.05)),var(--card-dark);">
+            <h2>🔔 Real-Time Skill Demand Alert System</h2>
+            <p class="muted">Live market intelligence — know which skills to learn before everyone else.</p>
+          </div>
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>📡 Live Market Signals</h3>
+              <div id="liveAlerts" style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem;"></div>
+            </div>
+            <div class="card glass">
+              <h3>⚙️ Alert Preferences</h3>
+              <p class="muted" style="font-size:0.85rem; margin-bottom:1.5rem;">Get notified when your target skills trend up</p>
+              <div class="form-group"><label>Your Target Skills</label><input type="text" id="alertSkills" placeholder="Python, React, DevOps..."></div>
+              <div class="form-group" style="display:flex; align-items:center; gap:1rem;">
+                <input type="checkbox" id="emailAlert" checked style="width:auto;">
+                <label for="emailAlert">Email Alerts</label>
+                <input type="checkbox" id="pushAlert" checked style="width:auto;">
+                <label for="pushAlert">Push Notifications</label>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="saveAlertPrefs()">💾 Save Alert Settings</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ⭐ 4. MICRO-TASK GIG BOARD -->
+        <section id="microTasks" class="section">
+          <div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(6,182,212,0.06)),var(--card-dark);">
+            <h2>🎯 Micro-Task Based Hiring (Gig Board)</h2>
+            <p class="muted">Real companies. Real tasks. Top performers get hired — no interviews needed.</p>
+            <span class="badge-verified" style="margin-top:0.5rem; display:inline-block;">⭐ Skip interviews — get hired by doing</span>
+          </div>
+          <div class="jobs-grid" id="gigTasksList"></div>
+        </section>
+
+        <!-- ⭐ 5. LEARNING-TO-JOB PIPELINE -->
+        <section id="learningPath" class="section">
+          <div class="card" style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(16,185,129,0.08)),var(--card-dark);">
+            <h2>🛤️ Learning-to-Job Pipeline</h2>
+            <p class="muted">Step-by-step guided career path: Learn → Build → Apply → Get Hired.</p>
+          </div>
+          <div id="learningPipelineView"></div>
+        </section>
+
+        <!-- ⭐ 6. AUTO PROJECT AI GENERATOR -->
+        <section id="projectGen" class="section">
+          <div class="card" style="background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(59,130,246,0.08)),var(--card-dark); border:1px solid rgba(139,92,246,0.2);">
+            <h2>🤖 Auto Project AI Generator</h2>
+            <p class="muted">Enter your skills → AI suggests real projects to build for your portfolio.</p>
+            <span class="badge-verified" style="margin-top:0.5rem; display:inline-block;">⭐ Very Unique — Builds your portfolio automatically</span>
+          </div>
+          <div class="card glass">
+            <h3>🎯 Generate Project Ideas</h3>
+            <div class="row" style="gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
+              <input type="text" id="pgSkills" placeholder="Enter your skills (e.g. Java, Python, React)..." style="flex:1; min-width:200px;">
+              <select id="pgLevel" style="width:auto;"><option>Beginner</option><option selected>Intermediate</option><option>Advanced</option></select>
+              <button class="btn btn-primary" onclick="generateProjects()">🤖 Generate Ideas</button>
+            </div>
+          </div>
+          <div class="grid-2" id="projectSuggestions" style="margin-top:0;"></div>
+        </section>
+
+        <!-- PORTFOLIO SECTION -->
+        <section id="portfolio" class="section">
+          <div class="card"><h3>🏆 Verified Portfolio</h3><p class="muted">Showcase your real work. Projects speak louder than marks.</p></div>
+          <div class="card glass">
+            <h4>➕ Add New Project</h4>
+            <form id="projectForm" style="margin-top:1rem;">
+              <div class="grid-2">
+                <div class="form-group"><label>Project Name</label><input type="text" id="projectName" placeholder="e.g. Task Manager App"></div>
+                <div class="form-group"><label>GitHub Link</label><input type="url" id="projectLink" placeholder="https://github.com/..."></div>
+              </div>
+              <div class="form-group"><label>Tech Stack</label><input type="text" id="projectTech" placeholder="React, Node.js, MongoDB"></div>
+              <div class="form-group"><label>Description</label><textarea id="projectDesc" rows="3" placeholder="What does it do? What problem does it solve?"></textarea></div>
+              <button type="submit" class="btn btn-primary">🚀 Add to Portfolio</button>
+            </form>
+          </div>
+          <div id="portfolioList" class="jobs-grid"></div>
+        </section>
+
+        <!-- APPLICATIONS SECTION -->
+        <section id="applications" class="section">
+          <div class="card"><h3>📋 My Application Journey</h3><p class="muted">Track every step from Applied to Hired.</p></div>
+          <div id="userApplicationsList" class="jobs-grid"></div>
+        </section>
+
+        <!-- PROFILE SECTION -->
+        <section id="profile" class="section">
+          <div class="card">
+            <h3>👤 My Identity</h3>
+            <form id="profileUpdateForm" style="margin-top:1.5rem;">
+              <div class="grid-2">
+                <div class="form-group"><label>Full Name</label><input type="text" id="profileName"></div>
+                <div class="form-group"><label>Contact</label><input type="text" id="profileContact"></div>
+              </div>
+              <div class="form-group"><label>University</label><input type="text" id="profileCollege"></div>
+              <button type="submit" class="btn btn-primary">💾 Update Profile</button>
+            </form>
+          </div>
+          <div class="card glass">
+            <h3>🛠️ Skills & Summary</h3>
+            <form id="skillsForm" style="margin-top:1.5rem;">
+              <div class="form-group"><label>Skills (comma-separated)</label><input type="text" id="profileSkills"></div>
+              <div class="form-group"><label>Professional Summary</label><textarea id="profileAbout" rows="5"></textarea></div>
+              <button type="submit" class="btn btn-primary">🔄 Sync Profile</button>
+            </form>
+          </div>
+        </section>
       </div>
-    </div>
-  </footer>
+
+      <footer style="margin-top:3rem; text-align:center; color:var(--text-dim); font-size:0.85rem; padding: 2rem 0;">
+        <p>© 2026 FresherJob • Skills-First Career Ecosystem</p>
+      </footer>
+    </main>
+  </div>
 
   <script src="app.js"></script>
 </body>

@@ -3,116 +3,1063 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recruiter Dashboard - FresherJob Ecosystem</title>
+  <title>RecruiterPro Dashboard - FresherJob Ecosystem</title>
+  <meta name="description" content="Enterprise Talent Acquisition OS. Post jobs, discover top freshers, manage applications and track hiring performance.">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RECRUITER-SPECIFIC STYLES ===== */
+    .notification-dot {
+      width: 10px; height: 10px;
+      background: var(--danger);
+      border-radius: 50%;
+      position: absolute;
+      top: -2px; right: -2px;
+    }
+    .notif-panel {
+      position: absolute;
+      top: 60px; right: 1rem;
+      width: 380px;
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      z-index: 999;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      display: none;
+    }
+    .notif-panel.open { display: block; }
+    .notif-item {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border-dark);
+      font-size: 0.9rem;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item.unread { background: rgba(59,130,246,0.05); }
+
+    /* Kanban Status */
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .status-Applied { background: rgba(59,130,246,0.15); color: var(--primary-bright); }
+    .status-Shortlisted { background: rgba(16,185,129,0.15); color: var(--success); }
+    .status-Interview-Scheduled { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .status-Selected { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid #34d399; }
+    .status-Rejected { background: rgba(244,63,94,0.15); color: var(--danger); }
+
+    /* Candidate Card */
+    .applicant-card {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .match-ring {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: 3px solid;
+      flex-shrink: 0;
+    }
+    .match-high { border-color: var(--success); color: var(--success); }
+    .match-mid { border-color: var(--warning); color: var(--warning); }
+    .match-low { border-color: var(--danger); color: var(--danger); }
+
+    /* Gap chips */
+    .gap-chip {
+      padding: 4px 10px;
+      background: rgba(244,63,94,0.1);
+      color: #fb7185;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid rgba(244,63,94,0.2);
+    }
+
+    /* Analytics */
+    .analytics-ring {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: conic-gradient(var(--primary) calc(var(--pct)*1%), var(--border-dark) 0);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      margin: 0 auto 1rem;
+    }
+    .analytics-ring::after {
+      content: '';
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--card-dark);
+      position: absolute;
+    }
+    .analytics-ring-text {
+      position: relative;
+      z-index: 1;
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    /* Chat */
+    .chat-message { margin-bottom: 1rem; }
+    .chat-message.mine { text-align: right; }
+    .chat-bubble {
+      display: inline-block;
+      padding: 0.8rem 1.2rem;
+      border-radius: 16px;
+      max-width: 70%;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    .chat-bubble.theirs { background: var(--border-dark); }
+    .chat-bubble.mine { background: var(--primary); color: white; }
+
+    /* Badge Earned */
+    .earned-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #1a1a1a;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Interview Slot */
+    .interview-slot {
+      padding: 1rem 1.5rem;
+      background: rgba(59,130,246,0.05);
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Overlay Modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      background: var(--border-dark);
+      border: none;
+      color: white;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    /* Progress Bar */
+    .progress-bar-wrap { background: var(--border-dark); border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s ease; }
+
+    /* Filter bar */
+    .filter-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.5rem 0; }
+    .filter-chip {
+      padding: 6px 14px;
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.8rem;
+    }
+    .filter-chip.active, .filter-chip:hover {
+      background: rgba(59,130,246,0.1);
+      border-color: var(--primary);
+      color: var(--primary-bright);
+    }
+
+    /* Sidebar Nav override */
+    .nav-link, .sidebar-link { cursor: pointer; }
+
+    /* ===== HIRING PIPELINE SPECIFIC ===== */
+    .pipeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+    .pipeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      min-width: 110px;
+      cursor: pointer;
+    }
+    .pipeline-step-circle {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--border-dark);
+      color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      border: 3px solid var(--border-dark);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .pipeline-step.active .pipeline-step-circle {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-color: var(--primary-bright);
+      box-shadow: 0 0 20px var(--primary-glow);
+      color: white;
+    }
+    .pipeline-step.done .pipeline-step-circle {
+      background: var(--success);
+      border-color: #34d399;
+      color: white;
+    }
+    .pipeline-step-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-top: 0.6rem;
+      text-align: center;
+      max-width: 90px;
+    }
+    .pipeline-step.active .pipeline-step-label {
+      color: var(--primary-bright);
+    }
+    .pipeline-step.done .pipeline-step-label {
+      color: var(--success);
+    }
+    .pipeline-connector {
+      width: 50px; height: 3px;
+      background: var(--border-dark);
+      margin-top: -28px;
+      flex-shrink: 0;
+    }
+    .pipeline-connector.done { background: var(--success); }
+    .pipeline-connector.active { background: linear-gradient(90deg, var(--success), var(--primary)); }
+
+    /* Kanban Board */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(210px, 1fr));
+      gap: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 1.5rem;
+    }
+    .kanban-col {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .kanban-col-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 16px 16px 0 0;
+    }
+    .kanban-col-body {
+      padding: 0.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-height: 200px;
+    }
+    .kanban-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: grab;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .kanban-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .kanban-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .kanban-card-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .kanban-card-role { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+    .kanban-card-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .k-btn {
+      padding: 4px 10px; border-radius: 8px; font-size: 0.72rem;
+      font-weight: 700; cursor: pointer; border: 1px solid var(--border-dark);
+      background: rgba(255,255,255,0.04); color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .k-btn:hover { background: rgba(59,130,246,0.1); color: var(--primary-bright); border-color: var(--primary); }
+    .k-btn.primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; }
+    .col-step1 .kanban-col-header { border-top: 3px solid #64748b; }
+    .col-step2 .kanban-col-header { border-top: 3px solid var(--primary); }
+    .col-step3 .kanban-col-header { border-top: 3px solid var(--cyan); }
+    .col-step4 .kanban-col-header { border-top: 3px solid var(--accent); }
+    .col-step5 .kanban-col-header { border-top: 3px solid var(--warning); }
+    .col-step6 .kanban-col-header { border-top: 3px solid #34d399; }
+    .col-step7 .kanban-col-header { border-top: 3px solid var(--success); }
+    .col-step1 .kanban-card::before { background: #64748b; }
+    .col-step2 .kanban-card::before { background: var(--primary); }
+    .col-step3 .kanban-card::before { background: var(--cyan); }
+    .col-step4 .kanban-card::before { background: var(--accent); }
+    .col-step5 .kanban-card::before { background: var(--warning); }
+    .col-step6 .kanban-card::before { background: #34d399; }
+    .col-step7 .kanban-card::before { background: var(--success); }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="row" style="gap: 1rem;">
-      <h1 class="logo">🚀 RecruiterPro</h1>
-      <span class="tagline">Manage your future talent pool</span>
-    </div>
-    <nav>
-      <a href="#" class="nav-link active" data-section="recruiterDashboard">Post a Job</a>
-      <a href="#" class="nav-link" data-section="manageJobs">Active Listings</a>
-      <a href="#" class="nav-link" data-section="viewApplications">View Applicants</a>
-      <a href="index.html" class="nav-link">Candidate View</a>
-      <button id="logoutBtn" class="btn-logout">Logout</button>
-    </nav>
-  </header>
-
-  <main class="container">
-    <!-- POST JOB SECTION -->
-    <section id="recruiterDashboard" class="section active">
-      <div class="card hero" style="display: flex; gap: 2rem; align-items: center;">
-        <div class="hero-image" style="flex: 0 0 250px;">
-          <img src="assets/recruiter-hero.png" alt="Recruiter Intelligence" style="width: 100%; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
-        </div>
-        <div style="flex: 1;">
-          <h2>📢 Post a New Fresher Opportunity</h2>
-          <p>Target active candidates based on their verified potential score and technical showcase.</p>
-        </div>
+  <div class="app-wrapper">
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1 class="logo">🚀 RecruiterPro</h1>
+        <span class="tagline">Enterprise Talent OS</span>
       </div>
 
-      <div class="card glass">
-        <h3>📄 Job Details</h3>
-        <form id="postJobForm">
-          <div class="grid-2" style="gap: 1rem;">
-            <div class="form-group">
-              <label>Role / Position Title</label>
-              <input type="text" id="jobTitle" placeholder="Frontend Developer (React)" required>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="analytics">
+          <span>📊</span> Analytics Hub
+        </a>
+        <a href="#" class="sidebar-link" data-section="postJob">
+          <span>📢</span> Post a Job
+        </a>
+        <a href="#" class="sidebar-link" data-section="jobManagement">
+          <span>🏢</span> Job Management
+        </a>
+        <a href="#" class="sidebar-link" data-section="applicants" id="applicantsNav">
+          <span>👥</span> Applicant Pipeline
+        </a>
+        <a href="#" class="sidebar-link" data-section="hiringPipeline">
+          <span>🔄</span> Hiring Pipeline
+        </a>
+        <a href="#" class="sidebar-link" data-section="talentPools">
+          <span>🌊</span> Instant Talent Pools
+        </a>
+        <a href="#" class="sidebar-link" data-section="trainHire">
+          <span>🎓</span> Train & Hire Mode
+        </a>
+        <a href="#" class="sidebar-link" data-section="reverseHiring">
+          <span>🔀</span> Reverse Hiring
+        </a>
+        <a href="#" class="sidebar-link" data-section="hiringSimulation">
+          <span>🎭</span> Hiring Simulator
+        </a>
+        <a href="#" class="sidebar-link" data-section="interviews">
+          <span>📅</span> Interview Scheduler
+        </a>
+        <a href="#" class="sidebar-link" data-section="messaging">
+          <span>💬</span> Candidate Chat
+        </a>
+        <a href="#" class="sidebar-link" data-section="recruiterBadge">
+          <span>🏆</span> Verified Badge
+        </a>
+        <a href="index.html" class="sidebar-link">
+          <span>🔙</span> Candidate View
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn btn-logout btn-sm">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="content-header">
+        <div style="flex: 1; max-width: 480px;">
+          <input type="text" id="headerSearch" placeholder="Search candidates, skills, or jobs..." 
+            style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-dark);">
+        </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="theme-label" id="themeIcon">🌙</span>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"></button>
+            <span class="theme-label" id="themeLabel">Dark</span>
+          </div>
+          <!-- Notification Bell -->
+          <div style="position: relative;">
+            <button class="btn btn-secondary btn-sm" id="notifBell" onclick="toggleNotifications()">
+              🔔 Alerts
+              <span class="notification-dot"></span>
+            </button>
+            <div class="notif-panel" id="notifPanel">
+              <div style="padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-dark); font-weight: 700;">🔔 Recent Notifications</div>
+              <div class="notif-item unread">
+                <strong>New Application!</strong><br>
+                <span class="muted" style="font-size:0.8rem;">Rahul Sharma applied for React Developer</span>
+              </div>
+              <div class="notif-item unread">
+                <strong>Profile Updated</strong><br>
+                <span class="muted" style="font-size:0.8rem;">Priya Patel added 3 new skills</span>
+              </div>
+              <div class="notif-item">
+                <strong>Interview Reminder</strong><br>
+                <span class="muted" style="font-size:0.8rem;">Technical round for Arjun - Tomorrow 10 AM</span>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Company Display Name</label>
-              <input type="text" id="jobCompany" placeholder="Google / Amazon / Startup" required>
+          </div>
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">R</div>
+        </div>
+      </header>
+
+      <div class="container">
+
+        <!-- ============================== -->
+        <!-- 1. ANALYTICS DASHBOARD         -->
+        <!-- ============================== -->
+        <section id="analytics" class="section active">
+          <div class="card" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.1)), var(--card-dark); border: 1px solid rgba(59,130,246,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2>Recruiter Command Center 📊</h2>
+                <p class="muted">Your real-time hiring intelligence dashboard.</p>
+              </div>
+              <div class="earned-badge">🏅 Verified Fresher Employer</div>
             </div>
           </div>
-          <div class="form-group">
-            <label>Detailed Description</label>
-            <textarea id="jobDescription" placeholder="What will they be working on? What's the impact?" rows="6" required></textarea>
+
+          <!-- KPI Stats -->
+          <div class="grid-3" style="margin-bottom: 2rem;" id="kpiGrid">
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="kpi-jobs">0</span>
+              <span class="stat-label">Jobs Posted</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="kpi-apps">0</span>
+              <span class="stat-label">Total Applicants</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="kpi-shortlisted">0</span>
+              <span class="stat-label">Shortlisted</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Required Skills (comma-separated)</label>
-            <input type="text" id="jobSkills" placeholder="JavaScript, Node.js, SQL" required>
+
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>📈 Hiring Success Rate</h3>
+              <div class="analytics-ring" style="--pct: 72; margin-top: 2rem;">
+                <span class="analytics-ring-text">72%</span>
+              </div>
+              <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Of applicants reach interview stage</p>
+              <div style="margin-top: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                  <span class="muted">Applied → Shortlisted</span><span style="color: var(--success);">42%</span>
+                </div>
+                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 42%;"></div></div>
+                <div style="display: flex; justify-content: space-between; margin: 0.8rem 0 0.5rem;">
+                  <span class="muted">Shortlisted → Interview</span><span style="color: var(--warning);">72%</span>
+                </div>
+                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 72%; background: linear-gradient(90deg, var(--warning), var(--accent));"></div></div>
+                <div style="display: flex; justify-content: space-between; margin: 0.8rem 0 0.5rem;">
+                  <span class="muted">Interview → Hired</span><span style="color: var(--success);">38%</span>
+                </div>
+                <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 38%; background: linear-gradient(90deg, var(--success), #34d399);"></div></div>
+              </div>
+            </div>
+
+            <div class="card glass">
+              <h3>🎯 Top Skills in Demand</h3>
+              <p class="muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">Based on your active job posts</p>
+              <div id="topSkillsChart">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
           </div>
-          <div class="grid-2" style="gap: 1rem;">
-            <div class="form-group">
-              <label>Job Type</label>
-              <select id="jobType">
-                <option value="Full-Time">Full-Time (Entry Level)</option>
-                <option value="Internship">Internship (Paid)</option>
-                <option value="Both">Both</option>
+        </section>
+
+        <!-- ============================== -->
+        <!-- HIRING PIPELINE (7 Steps)       -->
+        <!-- ============================== -->
+        <section id="hiringPipeline" class="section">
+          <!-- Page Hero -->
+          <div class="card" style="background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(139,92,246,0.1)), var(--card-dark); border: 1px solid rgba(59,130,246,0.2); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h2>🔄 Smart Hiring Pipeline</h2>
+                <p class="muted">End-to-end recruitment lifecycle — from job posting to final hiring.</p>
+                <p style="font-size: 0.8rem; color: var(--accent-bright); margin-top: 0.5rem; font-weight: 600;">✨ Unique: Skills + Potential + Portfolio based hiring (not experience)</p>
+              </div>
+              <div class="row" style="gap: 0.75rem;">
+                <button class="btn btn-secondary btn-sm" onclick="loadPipelineFromAPI()">🔄 Sync Live Data</button>
+                <button class="btn btn-primary btn-sm" onclick="navigate('postJob')">+ New Job Post</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pipeline Stats Summary -->
+          <div class="grid-3" style="margin-bottom: 2rem;">
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="pipe-total">0</span>
+              <span class="stat-label">Total in Pipeline</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="pipe-shortlisted">0</span>
+              <span class="stat-label">Shortlisted</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="pipe-hired">0</span>
+              <span class="stat-label">Hired ✅</span>
+            </div>
+          </div>
+
+          <!-- 7-Step Visual Progress Header -->
+          <div class="card glass" style="margin-bottom: 2rem; padding: 2rem;">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">📍 Recruitment Journey Map</h3>
+            <div class="pipeline-header" id="pipelineProgressBar">
+              <!-- Rendered by JS -->
+            </div>
+
+            <!-- Active Step Detail -->
+            <div id="activeStepDetail" style="margin-top: 1rem; padding: 1.5rem; background: rgba(59,130,246,0.05); border-radius: 12px; border: 1px solid rgba(59,130,246,0.15);">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Kanban Board -->
+          <div class="card glass" style="padding: 1.5rem; overflow-x: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h3>🗂️ Candidate Kanban Board</h3>
+              <div class="row" style="gap: 0.5rem;">
+                <select id="pipelineJobFilter" onchange="filterPipelineByJob(this.value)" style="padding: 8px 12px; font-size: 0.85rem; width: auto; border-radius: 10px;">
+                  <option value="">All Jobs</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" onclick="loadPipelineFromAPI()">Refresh</button>
+              </div>
+            </div>
+            <div class="kanban-board" id="kanbanBoard">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Step-by-Step Process Explanation -->
+          <div class="card" style="margin-top: 2rem;">
+            <h3>📖 How the Hiring Process Works</h3>
+            <p class="muted" style="margin-bottom: 2rem;">A transparent, 7-step skills-first recruitment process.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid #64748b;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: #64748b; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">1</div>
+                  <h4 style="margin: 0;">Job Posting</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Recruiter creates a detailed job post with title, required skills, description, and eligibility criteria targeting freshers.</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 1rem;" onclick="navigate('postJob')">📢 Post a Job →</button>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid var(--primary);">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">2</div>
+                  <h4 style="margin: 0;">Application Received</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Freshers view job listings, submit profiles, skills, and portfolio projects. Applications arrive in the pipeline.</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 1rem;" onclick="navigate('jobManagement')">👥 View Listings →</button>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid var(--cyan);">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: var(--cyan); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">3</div>
+                  <h4 style="margin: 0;">Candidate Screening</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Recruiter evaluates each candidate based on skills, projects, education, and the unique <strong style="color:var(--cyan);">Fresher Potential Score</strong>.</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 1rem;" onclick="navigate('applicants')">🔍 View Applicants →</button>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid var(--accent);">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">4</div>
+                  <h4 style="margin: 0;">Smart AI Matching</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">System computes <strong style="color:var(--accent-bright);">Match %</strong> and highlights <strong style="color:#fb7185;">Skill Gaps</strong> automatically, helping recruiters shortlist faster and smarter.</p>
+                <span class="badge-verified" style="margin-top: 0.75rem; display: inline-block;">⭐ Unique Feature</span>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid var(--warning);">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: var(--warning); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">5</div>
+                  <h4 style="margin: 0;">Shortlisting</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Recruiter shortlists qualified candidates and rejects unqualified ones. Candidates are notified of status changes.</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 1rem;" onclick="navigate('applicants')">✅ Shortlist Candidates →</button>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 14px; border: 1px solid var(--border-dark); border-left: 4px solid #34d399;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: #34d399; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: #0d1117;">6</div>
+                  <h4 style="margin: 0;">Interview</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Recruiter schedules interview rounds (Technical + HR), sends notifications to candidates, and evaluates communication skills.</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 1rem;" onclick="navigate('interviews')">📅 Schedule Interviews →</button>
+              </div>
+              <div style="padding: 1.5rem; background: rgba(16,185,129,0.05); border-radius: 14px; border: 1px solid rgba(16,185,129,0.3); border-left: 4px solid var(--success);">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                  <div style="width: 42px; height: 42px; background: var(--success); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white;">7</div>
+                  <h4 style="margin: 0;">🎉 Final Hiring</h4>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Recruiter selects the best candidate, marks status as <strong style="color: var(--success);">"Selected / Hired"</strong>, and earns a Fresher Employer Badge.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top: 1rem;" onclick="navigate('recruiterBadge')">🏅 View Badges →</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- ⭐ 1. INSTANT TALENT POOLS   -->
+        <!-- ============================== -->
+        <section id="talentPools" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(59,130,246,0.06)), var(--card-dark);">
+            <h2>🌊 Instant Talent Pools</h2>
+            <p class="muted">Skip the search — pre-built, high-quality talent pools ready for immediate hire.</p>
+          </div>
+          <div class="grid-3" id="talentPoolsGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- ⭐ 2. TRAIN & HIRE MODE      -->
+        <!-- ============================== -->
+        <section id="trainHire" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.06)), var(--card-dark);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>🎓 Train & Hire Mode</h2>
+                <p class="muted">Post a role + a learning roadmap. We train them, you hire them.</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openTrainHireModal()">+ New Training Program</button>
+            </div>
+          </div>
+          <div class="jobs-grid" id="trainHireList">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- ⭐ 3. REVERSE HIRING         -->
+        <!-- ============================== -->
+        <section id="reverseHiring" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.06)), var(--card-dark);">
+            <h2>🔀 Reverse Hiring System</h2>
+            <p class="muted">Recruiters compete for top freshers. Send "Bid Offers" to high-potential candidates.</p>
+          </div>
+          <div class="card glass">
+            <h3>⭐ Top Tier Marketplace (Verified Profiles Only)</h3>
+            <div id="reverseHiringList" style="margin-top:2rem;">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- ⭐ 4. HIRING SIMULATOR       -->
+        <!-- ============================== -->
+        <section id="hiringSimulation" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.06)), var(--card-dark);">
+            <h2>🎭 Hiring Simulation Dashboard</h2>
+            <p class="muted">Visualise expected performance before you click hire. predictive decision support.</p>
+          </div>
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>⚡ Risk vs. Reward Prediction</h3>
+              <p class="muted" style="font-size:0.85rem;">Probability candidate will perform well based on 50+ data points.</p>
+              <div id="simulationView" style="margin-top:2rem;">
+                <p class="muted">Select a shortlisted candidate to simulate.</p>
+              </div>
+            </div>
+            <div class="card glass">
+              <h3>🌱 Growth Prediction (2-Year Roadmap)</h3>
+              <div id="growthPredictionView">
+                <p class="muted">Select a candidate to see their career progression trajectory.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 2. POST A JOB                  -->
+        <!-- ============================== -->
+<section id="postJob" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.08)), var(--card-dark);">
+            <h2>📢 Publish New Opportunity</h2>
+            <p class="muted">Reach thousands of verified freshers actively seeking entry-level roles.</p>
+          </div>
+
+
+          <div class="card glass">
+            <form id="postJobForm">
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Role Title *</label>
+                  <input type="text" id="jobTitle" placeholder="e.g. Frontend Developer (React)">
+                </div>
+                <div class="form-group">
+                  <label>Company Name *</label>
+                  <input type="text" id="jobCompany" placeholder="Your Organisation Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Required Skills * <span class="muted" style="text-transform:none;">(comma-separated)</span></label>
+                <input type="text" id="jobSkills" placeholder="JavaScript, React, Node.js, CSS">
+              </div>
+              <div class="form-group">
+                <label>Job Description *</label>
+                <textarea id="jobDescription" placeholder="Describe responsibilities, tech stack, expected projects, and what the candidate will learn..." rows="5"></textarea>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Employment Type</label>
+                  <select id="jobType">
+                    <option value="Full-Time">Full-Time (Entry Level)</option>
+                    <option value="Internship">Internship (Paid)</option>
+                    <option value="Part-Time">Part-Time</option>
+                    <option value="Contract">Contract / Project-Based</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Work Location</label>
+                  <input type="text" id="jobLocation" placeholder="Bangalore / Remote / Hybrid">
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Min Annual Salary (₹)</label>
+                  <input type="number" id="jobSalaryMin" placeholder="400000">
+                </div>
+                <div class="form-group">
+                  <label>Max Annual Salary (₹)</label>
+                  <input type="number" id="jobSalaryMax" placeholder="1000000">
+                </div>
+              </div>
+              <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 2;">🚀 Publish to Ecosystem</button>
+                <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="document.getElementById('postJobForm').reset()">Clear Form</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 3. JOB MANAGEMENT              -->
+        <!-- ============================== -->
+        <section id="jobManagement" class="section">
+          <div class="card glass" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3>🏢 Active Job Listings</h3>
+              <p class="muted">Manage, edit, or archive your listings.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="navigate('postJob')">+ Post New Job</button>
+          </div>
+          <div id="recruiterJobsList" class="jobs-grid">
+            <div class="card glass"><p class="muted">Loading your listings...</p></div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 4. APPLICANT PIPELINE          -->
+        <!-- ============================== -->
+        <section id="applicants" class="section">
+          <div class="card glass">
+            <h3>👥 Applicant Pipeline</h3>
+            <p class="muted" id="pipelineTitle">Select a job from Job Management to view its applicants.</p>
+
+            <!-- Filters -->
+            <div class="filter-row" id="filterRow" style="display: none;">
+              <button class="filter-chip active" onclick="filterApplicants('all', this)">All</button>
+              <button class="filter-chip" onclick="filterApplicants('Applied', this)">Applied</button>
+              <button class="filter-chip" onclick="filterApplicants('Shortlisted', this)">Shortlisted</button>
+              <button class="filter-chip" onclick="filterApplicants('Interview Scheduled', this)">Interview Set</button>
+              <button class="filter-chip" onclick="filterApplicants('Selected', this)">Selected</button>
+              <button class="filter-chip" onclick="filterApplicants('Rejected', this)">Rejected</button>
+              <select id="skillFilter" onchange="filterBySkill(this.value)" style="padding: 6px 12px; font-size: 0.8rem; width: auto; border-radius: 20px;">
+                <option value="">Filter by Skill</option>
+              </select>
+              <select id="scoreFilter" onchange="filterByScore(this.value)" style="padding: 6px 12px; font-size: 0.8rem; width: auto; border-radius: 20px;">
+                <option value="">Score Range</option>
+                <option value="80">80+ (Top Talent)</option>
+                <option value="60">60+ (Good Match)</option>
+                <option value="40">40+ (Potential)</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Location</label>
-              <input type="text" id="jobLocation" placeholder="Bangalore / Remote">
+          </div>
+
+          <div id="applicantsList" class="jobs-grid">
+            <div class="card"><p class="muted">Select a job to load candidates.</p></div>
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 5. TALENT SEARCH               -->
+        <!-- ============================== -->
+        <section id="talentSearch" class="section">
+          <div class="card glass">
+            <h3>🔍 Proactive Talent Sourcing</h3>
+            <p class="muted">Discover candidates who match your requirements — even before they apply.</p>
+            <div class="row" style="margin-top: 1.5rem; gap: 1rem;">
+              <input type="text" id="talentSkillInput" placeholder="Enter skills (e.g. Python, Machine Learning, TensorFlow)..." style="flex: 1;">
+              <input type="number" id="talentMinScore" placeholder="Min Score" style="width: 120px;">
+              <button class="btn btn-primary" onclick="sourceTalent()">🎯 Find Talent</button>
             </div>
           </div>
-          <div class="grid-2" style="gap: 1rem;">
-            <div class="form-group">
-              <label>Salary Range Min (₹)</label>
-              <input type="number" id="jobSalaryMin" placeholder="500000">
+
+          <div class="grid-2" id="talentResults">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 6. INTERVIEW SCHEDULER         -->
+        <!-- ============================== -->
+        <section id="interviews" class="section">
+          <div class="card glass" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3>📅 Interview Scheduler</h3>
+              <p class="muted">Coordinate and manage all technical and HR interview rounds.</p>
             </div>
-            <div class="form-group">
-              <label>Salary Range Max (₹)</label>
-              <input type="number" id="jobSalaryMax" placeholder="1200000">
+            <button class="btn btn-primary btn-sm" onclick="openScheduleModal()">+ Schedule Interview</button>
+          </div>
+
+          <div id="interviewSlots">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- 7. MESSAGING / CHAT            -->
+        <!-- ============================== -->
+        <section id="messaging" class="section">
+          <div class="card glass" style="padding: 0; display: flex; height: 680px; overflow: hidden;">
+            <!-- Contacts List -->
+            <div style="width: 300px; border-right: 1px solid var(--border-dark); display: flex; flex-direction: column;">
+              <header style="padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border-dark);">
+                <h4>💬 Candidate Inbox</h4>
+                <input type="text" placeholder="Search..." style="margin-top: 0.75rem; font-size: 0.85rem; padding: 8px 12px;">
+              </header>
+              <div style="flex: 1; overflow-y: auto;" id="contactList">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <header style="padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border-dark); display: flex; justify-content: space-between; align-items: center;">
+                <div class="row" id="chatHeader">
+                  <div style="width: 36px; height: 36px; background: var(--success); border-radius: 50%;"></div>
+                  <div>
+                    <p style="font-weight: 700;">Rahul Sharma</p>
+                    <span class="badge-verified" style="font-size: 0.6rem;">React Developer Applicant</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="openScheduleModal()">📅 Schedule Interview</button>
+              </header>
+              <div style="flex: 1; padding: 2rem; overflow-y: auto;" id="chatWindow">
+                <div class="chat-message">
+                  <div class="chat-bubble theirs">Hi! I noticed your React Developer opening. I have 2 real-world projects in React and TypeScript. 🙏</div>
+                  <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">Rahul • 9:30 AM</div>
+                </div>
+                <div class="chat-message mine">
+                  <div class="chat-bubble mine">Hello Rahul! Your profile looks great. Can you briefly describe your project architecture?</div>
+                  <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; text-align: right;">You • 10:01 AM</div>
+                </div>
+                <div class="chat-message">
+                  <div class="chat-bubble theirs">Sure! I built a real-time Task Dashboard using React, Redux, and WebSockets with Docker deployment. Scalable to 5k concurrent users.</div>
+                  <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">Rahul • 10:05 AM</div>
+                </div>
+              </div>
+              <div style="padding: 1.5rem; border-top: 1px solid var(--border-dark);">
+                <div class="row">
+                  <input type="text" id="msgInput" placeholder="Write a professional message..." style="flex: 1;" onkeypress="handleEnterMsg(event)">
+                  <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">Send 📩</button>
+                </div>
+              </div>
             </div>
           </div>
-          <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%;">🚀 Publish Job Listing</button>
-        </form>
-      </div>
-    </section>
+        </section>
 
-    <!-- MANAGE JOBS SECTION -->
-    <section id="manageJobs" class="section">
-      <div class="card">
-        <h3>🏢 Your Active Listings</h3>
-        <p class="muted">Manage and track performance of your job postings.</p>
-      </div>
-      <div id="recruiterJobsList" class="jobs-grid">
-        <div class="card"><p class="muted">Fetching your job history...</p></div>
-      </div>
-    </section>
+        <!-- ============================== -->
+        <!-- 8. VERIFIED FRESHER BADGE      -->
+        <!-- ============================== -->
+        <section id="recruiterBadge" class="section">
+          <div class="card" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.08)), var(--card-dark); border: 1px solid rgba(245,158,11,0.3);">
+            <div class="row" style="justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h2>🏅 Verified Fresher Employer Badge</h2>
+                <p class="muted">Build trust with students and institutions. Earn badges that verify your commitment to fresher hiring.</p>
+              </div>
+              <div class="earned-badge" style="font-size: 1rem; padding: 12px 24px;">🏆 Certified Fresher Employer</div>
+            </div>
+          </div>
 
-    <!-- VIEW APPLICATIONS SECTION -->
-    <section id="viewApplications" class="section">
-      <div class="card">
-        <h3>👥 Candidate Applications</h3>
-        <p class="muted">Review applicants sorted by AI Matching Score.</p>
-      </div>
-      <div id="applicantsList" class="jobs-grid">
-        <div class="card"><p class="muted">Select a job from 'Active Listings' to see applicants.</p></div>
-      </div>
-    </section>
-  </main>
+          <div class="grid-2">
+            <div class="card glass">
+              <h3>🎖️ Your Earned Badges</h3>
+              <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.5rem;">
+                <div class="row" style="justify-content: space-between; padding: 1rem; background: rgba(245,158,11,0.05); border-radius: 12px; border: 1px solid rgba(245,158,11,0.15);">
+                  <div class="row" style="gap: 1rem;">
+                    <span style="font-size: 2rem;">🏅</span>
+                    <div>
+                      <p style="font-weight: 700;">First Fresher Hire</p>
+                      <p class="muted" style="font-size: 0.8rem;">Hired your first entry-level candidate</p>
+                    </div>
+                  </div>
+                  <span class="earned-badge">Earned</span>
+                </div>
+                <div class="row" style="justify-content: space-between; padding: 1rem; background: rgba(245,158,11,0.05); border-radius: 12px; border: 1px solid rgba(245,158,11,0.15);">
+                  <div class="row" style="gap: 1rem;">
+                    <span style="font-size: 2rem;">🎓</span>
+                    <div>
+                      <p style="font-weight: 700;">Campus Connect</p>
+                      <p class="muted" style="font-size: 0.8rem;">Partnered with 1 institution</p>
+                    </div>
+                  </div>
+                  <span class="earned-badge">Earned</span>
+                </div>
+                <div class="row" style="justify-content: space-between; padding: 1rem; background: rgba(16,185,129,0.05); border-radius: 12px; border: 1px solid rgba(16,185,129,0.15);">
+                  <div class="row" style="gap: 1rem;">
+                    <span style="font-size: 2rem;">💼</span>
+                    <div>
+                      <p style="font-weight: 700;">Training Provider</p>
+                      <p class="muted" style="font-size: 0.8rem;">Commit to skill training post-hire</p>
+                    </div>
+                  </div>
+                  <span class="badge-verified">In Progress</span>
+                </div>
+              </div>
+            </div>
 
-  <footer>
-    <div class="container footer-content">
-      <p>© 2026 RecruiterPro • Powered by FresherJob Ecosystem</p>
+            <div class="card glass">
+              <h3>🚀 Unlock Next Badges</h3>
+              <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>⭐ Power Recruiter (10 hires)</span>
+                    <span class="muted">3/10</span>
+                  </div>
+                  <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 30%;"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>🌟 Elite Partner (5 campus drives)</span>
+                    <span class="muted">1/5</span>
+                  </div>
+                  <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 20%; background: linear-gradient(90deg, var(--warning), var(--accent));"></div></div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span>💡 Innovation Sponsor (Hackathon)</span>
+                    <span class="muted">0/1</span>
+                  </div>
+                  <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width: 0%;"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer style="text-align: center; color: var(--text-dim); font-size: 0.85rem; padding: 3rem 0 1.5rem;">
+        <p>© 2026 RecruiterPro • Powered by FresherJob Ecosystem</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ============================== -->
+  <!-- CANDIDATE PROFILE MODAL        -->
+  <!-- ============================== -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+      <div id="profileModalContent">Loading...</div>
     </div>
-  </footer>
+  </div>
+
+  <!-- ============================== -->
+  <!-- INTERVIEW SCHEDULE MODAL       -->
+  <!-- ============================== -->
+  <div class="modal-overlay" id="scheduleModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('scheduleModal')">✕</button>
+      <h3>📅 Schedule Interview</h3>
+      <p class="muted" style="margin-bottom: 1.5rem;">Fill in interview details and notify the candidate.</p>
+      <div class="form-group">
+        <label>Candidate Name</label>
+        <input type="text" id="schedCandidateName" placeholder="e.g. Rahul Sharma">
+      </div>
+      <div class="form-group">
+        <label>Interview Round</label>
+        <select id="schedRound">
+          <option>Technical Round 1</option>
+          <option>Technical Round 2</option>
+          <option>HR Round</option>
+          <option>Final / Offer Discussion</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="schedDate">
+        </div>
+        <div class="form-group">
+          <label>Time</label>
+          <input type="time" id="schedTime">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Meeting Link / Location</label>
+        <input type="text" id="schedLink" placeholder="https://meet.google.com/... or Room 201">
+      </div>
+      <div class="form-group">
+        <label>Note to Candidate</label>
+        <textarea id="schedNote" rows="3" placeholder="Please prepare with LeetCode Easy/Medium + System Design basics."></textarea>
+      </div>
+      <button class="btn btn-primary" style="width: 100%;" onclick="saveInterview()">📅 Schedule & Notify Candidate</button>
+    </div>
+  </div>
+
+  <!-- EDIT JOB MODAL -->
+  <div class="modal-overlay" id="editJobModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('editJobModal')">✕</button>
+      <h3>✏️ Edit Job Listing</h3>
+      <div class="form-group" style="margin-top: 1.5rem;">
+        <label>Job Title</label>
+        <input type="text" id="editJobTitle">
+      </div>
+      <div class="form-group">
+        <label>Required Skills</label>
+        <input type="text" id="editJobSkills">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="editJobDesc" rows="4"></textarea>
+      </div>
+      <input type="hidden" id="editJobId">
+      <button class="btn btn-primary" style="width: 100%;" onclick="saveJobEdit()">💾 Save Changes</button>
+    </div>
+  </div>
 
   <script src="recruiter-app.js"></script>
 </body>

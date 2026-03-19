@@ -1,6 +1,26 @@
 // ============================================
-// PortalAdmin - Frontend Logic
+// LIGHT / DARK MODE
 // ============================================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  localStorage.setItem('fj_theme', isLight ? 'dark' : 'light');
+  const icon  = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (icon)  icon.textContent  = isLight ? '🌙' : '☀️';
+  if (label) label.textContent = isLight ? 'Dark' : 'Light';
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('fj_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  const icon  = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (icon)  icon.textContent  = saved === 'light' ? '☀️' : '🌙';
+  if (label) label.textContent = saved === 'light' ? 'Light' : 'Dark';
+})();
+window.toggleTheme = toggleTheme;
 
 const appState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
@@ -40,7 +60,14 @@ function showNotification(message, type = 'success') {
   const note = document.createElement('div');
   note.className = `notification notification-${type}`;
   note.textContent = message;
-  note.style.cssText = `position: fixed; top: 1rem; right: 1rem; background: ${type === 'success' ? '#10b981' : '#ef4444'}; color: white; padding: 1rem; border-radius: 8px; z-index: 9999;`;
+  note.style.cssText = `
+    position: fixed; top: 1.5rem; right: 1.5rem; 
+    background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #f43f5e, #e11d48)'}; 
+    color: white; padding: 1.25rem 2rem; border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 10000;
+    font-weight: 600; font-family: 'Outfit', sans-serif;
+    border: 1px solid rgba(255,255,255,0.1);
+  `;
   document.body.appendChild(note);
   setTimeout(() => note.remove(), 3000);
 }
@@ -69,9 +96,9 @@ function renderJobs() {
     card.innerHTML = `
       <h4 style="margin:0;">${job.title}</h4>
       <p class="muted">${job.company} • ${job.location}</p>
-      <div class="row" style="margin-top: 1rem; gap: 0.5rem;">
-        <button class="btn-primary btn-sm" onclick="approveJob(${job.id})">Approve</button>
-        <button class="btn-secondary btn-sm" onclick="rejectJob(${job.id})">Flag</button>
+      <div class="row" style="margin-top: 1.5rem; gap: 0.75rem;">
+        <button class="btn btn-primary btn-sm" onclick="approveJob(${job.id})">Approve</button>
+        <button class="btn btn-secondary btn-sm" onclick="rejectJob(${job.id})">Flag Listing</button>
       </div>
     `;
     container.appendChild(card);
@@ -94,13 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchSystemSummary();
 
-  document.querySelectorAll('.nav-link').forEach(link => {
+  document.querySelectorAll('.sidebar-link').forEach(link => {
     link.addEventListener('click', (e) => {
       const id = link.getAttribute('data-section');
       if (!id) return;
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      const activeSection = document.getElementById(id);
+      if (activeSection) activeSection.classList.add('active');
       link.classList.add('active');
     });
   });

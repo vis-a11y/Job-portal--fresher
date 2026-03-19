@@ -3,72 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - FresherJob Ecosystem</title>
+  <title>PortalAdmin Panel - FresherJob Ecosystem</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="topbar">
-    <div class="row" style="gap: 1rem;">
-      <h1 class="logo">🚀 PortalAdmin</h1>
-      <span class="tagline">Maintain platform ecosystem integrity</span>
-    </div>
-    <nav>
-      <a href="#" class="nav-link active" data-section="systemOverview">System Overview</a>
-      <a href="#" class="nav-link" data-section="manageUsers">Manage Users</a>
-      <a href="#" class="nav-link" data-section="verifyJobs">Verify Listings</a>
-      <a href="index.html" class="nav-link">Candidate View</a>
-      <button id="logoutBtn" class="btn-logout">Logout</button>
-    </nav>
-  </header>
-
-  <main class="container">
-    <!-- SYSTEM OVERVIEW -->
-    <section id="systemOverview" class="section active">
-      <div class="card hero-compact">
-        <h2>📊 Platform Pulse</h2>
-        <p>Real-time analytics for the FresherJob ecosystem.</p>
+  <div class="app-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1 class="logo">🚀 PortalAdmin</h1>
+        <span class="tagline">System Integrity OS</span>
       </div>
+      
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-section="systemOverview">
+          <span class="icon">📊</span> System Pulse
+        </a>
+        <a href="#" class="sidebar-link" data-section="manageUsers">
+          <span class="icon">👥</span> Manage Users
+        </a>
+        <a href="#" class="sidebar-link" data-section="verifyJobs">
+          <span class="icon">🛡️</span> Verify Listings
+        </a>
+        <a href="index.html" class="sidebar-link">
+          <span class="icon">🔙</span> Candidate View
+        </a>
+      </nav>
 
-      <div class="grid-2">
-        <div class="card glass">
-          <h3>Total Candidate Pool</h3>
-          <p class="highlight" id="adminTotalCandidates">Loading...</p>
+      <div class="sidebar-footer">
+        <button id="logoutBtn" class="btn btn-logout btn-sm">Sign Out Safely</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="content-header">
+        <div class="search-bar" style="flex: 1; max-width: 500px;">
+          <input type="text" placeholder="Search system logs, users, or job reports..." style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-dark);">
         </div>
-        <div class="card glass">
-          <h3>Active Recruiters</h3>
-          <p class="highlight" id="adminTotalRecruiters">Loading...</p>
+        <div class="user-actions row" style="gap: 0.75rem; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="theme-label" id="themeIcon">🌙</span>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode"></button>
+            <span class="theme-label" id="themeLabel">Dark</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showNotification('System logs coming soon!', 'info')">📜 Logs</button>
+          <div class="profile-thumb" style="width: 40px; height: 40px; background: var(--danger); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">A</div>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <!-- MANAGE USERS -->
-    <section id="manageUsers" class="section">
-      <div class="card">
-        <h3>👥 Registered Ecosystem Users</h3>
-        <p class="muted">Click on any user to manage their role or delete profile.</p>
-      </div>
-      <div id="adminUsersList" class="jobs-grid">
-        <div class="card"><p class="muted">Scanning records...</p></div>
-      </div>
-    </section>
+      <div class="container">
+        <!-- SYSTEM OVERVIEW -->
+        <section id="systemOverview" class="section active">
+          <div class="card hero">
+            <div style="flex: 1;">
+              <h2>Ecosystem Intelligence 📈</h2>
+              <p>Real-time analytics for the FresherJob global ecosystem.</p>
+              <div style="margin-top: 1.5rem;">
+                <button class="btn btn-primary btn-sm">✨ Generate Report</button>
+              </div>
+            </div>
+          </div>
 
-    <!-- VERIFY JOBS -->
-    <section id="verifyJobs" class="section">
-      <div class="card">
-        <h3>🛡️ Job Verification Pipeline</h3>
-        <p class="muted">Check and approve new job listings before they go live for candidates.</p>
-      </div>
-      <div id="adminJobsList" class="jobs-grid">
-        <div class="card"><p class="muted">Checking verification queue...</p></div>
-      </div>
-    </section>
-  </main>
+          <div class="grid-2">
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="adminTotalCandidates">2.4k</span>
+              <span class="stat-label">Total Candidate Entries</span>
+            </div>
+            <div class="card glass stat-pill">
+              <span class="stat-val" id="adminTotalRecruiters">150+</span>
+              <span class="stat-label">Verified Enterprise Partners</span>
+            </div>
+          </div>
+        </section>
 
-  <footer>
-    <div class="container footer-content">
-      <p>© 2026 PortalAdmin • Advanced Ecosystem Management</p>
-    </div>
-  </footer>
+        <!-- MANAGE USERS -->
+        <section id="manageUsers" class="section">
+          <div class="card">
+            <h3>👥 Ecosystem Stakeholders</h3>
+            <p class="muted">Click on any user to manage their role or auditing profile.</p>
+          </div>
+          <div id="adminUsersList" class="jobs-grid"></div>
+        </section>
+
+        <!-- VERIFY JOBS -->
+        <section id="verifyJobs" class="section">
+          <div class="card">
+            <h3>🛡️ Integrity Verification Pipeline</h3>
+            <p class="muted">Review and authorize new job listings before they go live.</p>
+          </div>
+          <div id="adminJobsList" class="jobs-grid"></div>
+        </section>
+      </div>
+
+      <footer style="margin-top: 3rem; text-align: center; color: var(--text-dim); font-size: 0.85rem;">
+        <p>© 2026 PortalAdmin • Powered by FresherJob Ecosystem</p>
+      </footer>
+    </main>
+  </div>
 
   <script src="admin-app.js"></script>
 </body>
